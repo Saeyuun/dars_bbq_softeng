@@ -1,6 +1,6 @@
 <template>
     <div class="flex min-h-screen bg-gray-50">
-        <div class="w-64 bg-white shadow-md">
+        <div class="w-64 bg-white">
             <SideBarEmployee />
         </div>
 
