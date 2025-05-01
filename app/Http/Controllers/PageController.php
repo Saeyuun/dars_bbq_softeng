@@ -13,11 +13,6 @@ class PageController extends Controller
         return Inertia::render('EmployeeDashboard');
     }
 
-    public function employees()
-    {
-        return Inertia::render('Employees');
-    }
-
     public function homepage()
     {
         return Inertia::render('Homepage');
@@ -26,5 +21,9 @@ class PageController extends Controller
     public function inventory()
     {
         return Inertia::render('Inventory');
+    }
+
+    public function history() {
+        return Inertia::render('History');
     }
 }
