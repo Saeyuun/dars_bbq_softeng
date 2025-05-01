@@ -21,6 +21,7 @@ Route::get('/dashboard', [PageController::class, 'employeedashboard']);
 Route::get('/employees', [PageController::class, 'employees']);
 Route::get('/homepage', [PageController::class, 'homepage']);
 Route::get('/inventory', [PageController::class, 'inventory']);
+Route::get('/attendance', [PageController::class, 'attendance']);
 Route::get('/history', [PageController::class, 'history']);
 
 
@@ -37,4 +38,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

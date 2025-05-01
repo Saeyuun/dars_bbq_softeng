@@ -22,8 +22,12 @@ class PageController extends Controller
     {
         return Inertia::render('Inventory');
     }
-
-    public function history() {
+    public function attendance()
+    {
+        return Inertia::render('Attendance');
+    }
+    public function history()
+    {
         return Inertia::render('History');
     }
 }
