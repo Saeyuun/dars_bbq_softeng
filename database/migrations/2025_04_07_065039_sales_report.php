@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('sales_id')->autoIncrement()->unique();
             $table->foreignId('cost_id')->constrained('cost_report', 'cost_id')->onDelete('cascade');
             $table->foreignId('employee_id')->constrained('employee', 'employee_id')->onDelete('cascade');
-            $table->foreignID('order_id')->constrained('order_table', 'order_id')->onDelete('cascade');
             $table->integer('total_sales');
             $table->date('date_added');
             $table->timestamps();

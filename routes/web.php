@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\EmployeeController;
 use Inertia\Inertia;
 
 // Route::get('/', function () {
@@ -15,16 +16,20 @@ use Inertia\Inertia;
 //     ]);
 // });
 
+
 Route::get('/dashboard', [PageController::class, 'employeedashboard']);
 Route::get('/employees', [PageController::class, 'employees']);
 Route::get('/homepage', [PageController::class, 'homepage']);
 Route::get('/inventory', [PageController::class, 'inventory']);
+Route::get('/history', [PageController::class, 'history']);
 
 
 
 Route::get('/', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::resource('employees', EmployeeController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

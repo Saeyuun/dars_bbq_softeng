@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('inventory', function (Blueprint $table) {
             $table->id('inventory_id')->autoIncrement()->unique();
             $table->foreignId('employee_id')->constrained('employee', 'employee_id')->onDelete('cascade');
-            $table->foreignId('item_id')->constrained('item', 'item_id')->onDelete('cascade');
+            // $table->foreignId('item_id')->constrained('item', 'item_id')->onDelete('cascade');
             $table->integer('quantity');
             $table->date('date_added');
             $table->string('status')->default('available'); // available, out_of_stock

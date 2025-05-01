@@ -77,9 +77,9 @@
 </template>
 
 <script>
-import HistoryHeader from "@/components/Headers/history-header.vue";
-import SideBarEmployee from "@/components/side-bar-employee.vue";
-import DateFilter from "@/components/date-filter.vue";
+import HistoryHeader from "@/Components/Headers/history-header.vue";
+import SideBarEmployee from "@/Components/side-bar-employee.vue";
+import DateFilter from "@/Components/date-filter.vue";
 
 export default {
   name: "History",
