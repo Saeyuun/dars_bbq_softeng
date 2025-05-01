@@ -67,7 +67,9 @@
                                 <td class="px-6 py-4">
                                     {{ employee.contact }}
                                 </td>
-                                <td class="px-6 py-4">{{ employee.role }}</td>
+                                <td class="px-6 py-4">
+                                    {{ employee.position }}
+                                </td>
                                 <td class="px-6 py-4">
                                     {{ employee.address }}
                                 </td>
@@ -219,7 +221,7 @@ export default {
             selectedEmployee: null,
             newEmployee: {
                 name: "",
-                role: "",
+                position: "",
                 contact: "",
             },
             employees: [
@@ -227,7 +229,7 @@ export default {
                     id: 1,
                     name: "Jennie",
                     email: "jennie.bp@gmail.com",
-                    role: "Cashier",
+                    position: "Cashier",
                     contact: "+6309019311",
                     avatar: "https://placehold.co/40x40",
                 },
@@ -235,7 +237,7 @@ export default {
                     id: 2,
                     name: "Karina",
                     email: "karina.bp@gmail.com",
-                    role: "Cashier",
+                    position: "Cashier",
                     contact: "+6387653912",
                     avatar: "https://placehold.co/40x40",
                 },
@@ -243,7 +245,7 @@ export default {
                     id: 3,
                     name: "Lisa",
                     email: "lisa.bp@gmail.com",
-                    role: "Sales Clerk",
+                    position: "Sales Clerk",
                     contact: "+639058604",
                     avatar: "https://placehold.co/40x40",
                 },
@@ -280,7 +282,7 @@ export default {
                 id: null,
                 name: "",
                 email: "",
-                role: "",
+                position: "",
                 contact: "",
                 profilePicture: null,
             };
@@ -293,6 +295,15 @@ export default {
         openDeleteModal(employee) {
             this.selectedEmployee = employee;
             this.showDeleteEmployeeModal = true;
+        },
+        editEmployee(updatedEmployee) {
+            const index = this.employees.findIndex(
+                (emp) => emp.id === updatedEmployee.id
+            );
+            if (index !== -1) {
+                this.employees.splice(index, 1, updatedEmployee);
+            }
+            this.showEditEmployeeModal = false;
         },
         deleteEmployee(employeeId) {
             this.employees = this.employees.filter(
