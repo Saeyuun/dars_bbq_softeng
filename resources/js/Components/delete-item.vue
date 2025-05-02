@@ -12,20 +12,19 @@
                 ✕
             </button>
 
-            <!-- Employee Info -->
+            <!-- Item Info -->
             <div class="flex flex-col items-center mb-6">
                 <img
                     :src="
-                        employee.profilePicture ||
-                        'https://via.placeholder.com/150'
+                        item.profilePicture || 'https://via.placeholder.com/150'
                     "
                     alt="Profile Picture"
                     class="w-20 h-20 rounded-full object-cover mb-4"
                 />
                 <h3 class="text-lg font-semibold text-gray-800">
-                    {{ employee.name }}
+                    {{ item.name }}
                 </h3>
-                <p class="text-sm text-gray-500">ID: {{ employee.id }}</p>
+                <p class="text-sm text-gray-500">ID: {{ item.id }}</p>
             </div>
 
             <!-- Delete Button -->
@@ -33,7 +32,7 @@
                 class="w-full bg-[#E64444] text-white font-semibold py-2 rounded-md hover:bg-[#c33] focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                 @click="confirmDelete"
             >
-                Delete Employee Record
+                Delete item
             </button>
         </div>
     </div>
@@ -41,13 +40,13 @@
 
 <script>
 export default {
-    name: "DeleteEmployee",
+    name: "DeleteItem",
     props: {
         show: {
             type: Boolean,
             required: true,
         },
-        employee: {
+        item: {
             type: Object,
             required: true,
         },
@@ -57,7 +56,7 @@ export default {
             this.$emit("close");
         },
         confirmDelete() {
-            this.$emit("delete", this.employee.id);
+            this.$emit("delete", this.item.id);
         },
     },
 };

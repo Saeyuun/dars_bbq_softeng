@@ -237,31 +237,33 @@ export default {
             selectedItem: null,
             searchQuery: "",
             deleteSuccessMessage: "",
+
+            // Partial data was initialized here for demonstration purposes
             items: [
-                {
-                    id: 1,
-                    name: "Manok",
-                    status: "Available",
-                    quantity: 10,
-                    dateUpdated: "2023-04-01",
-                    description: "---",
-                },
-                {
-                    id: 2,
-                    name: "Barbeque Chicken",
-                    status: "Available",
-                    quantity: 15,
-                    dateUpdated: "2023-03-28",
-                    description: "--",
-                },
-                {
-                    id: 3,
-                    name: "Pork Belly",
-                    status: "Out of Stock",
-                    quantity: 0,
-                    dateUpdated: "2023-03-15",
-                    description: "---",
-                },
+                // {
+                //     id: 1,
+                //     name: "",
+                //     status: "",
+                //     quantity: "",
+                //     dateUpdated: "",
+                //     description: "",
+                // },
+                // {
+                //     id: 2,
+                //     name: "",
+                //     status: "",
+                //     quantity: "",
+                //     dateUpdated: "",
+                //     description: "",
+                // },
+                // {
+                //     id: 3,
+                //     name: "",
+                //     status: "",
+                //     quantity: "",
+                //     dateUpdated: "",
+                //     description: "",
+                // },
             ],
         };
     },

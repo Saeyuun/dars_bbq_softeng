@@ -4,16 +4,25 @@
         <div class="flex-1 p-4 ml-[250px]">
             <!-- Search bar and Add button -->
             <div class="flex justify-between items-center mb-4">
-                <div class="relative">
+                <!-- Left section: Search bar and Search button -->
+                <div class="flex items-center gap-2">
                     <input
                         type="text"
                         placeholder="Search..."
                         class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                         v-model="searchQuery"
                     />
+                    <button
+                        class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        @click="toggleAttendance"
+                    >
+                        Search Employee
+                    </button>
                 </div>
+
+                <!-- Right section: Add Employee button -->
                 <button
-                    class="ml-2 rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
                     @click="showAddEmployeeModal = true"
                 >
                     Add Employee Record
@@ -31,13 +40,13 @@
                         class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
                     >
                         <tr>
+                            <th scope="col" class="px-6 py-3">Employee ID</th>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">Contact No.</th>
                             <th scope="col" class="px-6 py-3">Position</th>
                             <th scope="col" class="px-6 py-3">Address</th>
                             <th scope="col" class="px-6 py-3">Hire Date</th>
-                            <th scope="col" class="px-6 py-3">Employee ID</th>
                             <th scope="col" class="px-6 py-3 text-right">
                                 Actions
                             </th>
@@ -51,6 +60,11 @@
                             <tr
                                 class="bg-white border-b border-gray-200 hover:bg-gray-50"
                             >
+                                <td
+                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                                >
+                                    {{ employee.id }}
+                                </td>
                                 <td
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                                 >
@@ -76,7 +90,6 @@
                                 <td class="px-6 py-4">
                                     {{ employee.hireDate }}
                                 </td>
-                                <td class="px-6 py-4">{{ employee.id }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <button
                                         class="text-gray-500 hover:text-[#E64444] focus:outline-none"
@@ -224,31 +237,33 @@ export default {
                 position: "",
                 contact: "",
             },
+
+            // Partial data was inserted here
             employees: [
-                {
-                    id: 1,
-                    name: "Jennie",
-                    email: "jennie.bp@gmail.com",
-                    position: "Cashier",
-                    contact: "+6309019311",
-                    avatar: "https://placehold.co/40x40",
-                },
-                {
-                    id: 2,
-                    name: "Karina",
-                    email: "karina.bp@gmail.com",
-                    position: "Cashier",
-                    contact: "+6387653912",
-                    avatar: "https://placehold.co/40x40",
-                },
-                {
-                    id: 3,
-                    name: "Lisa",
-                    email: "lisa.bp@gmail.com",
-                    position: "Sales Clerk",
-                    contact: "+639058604",
-                    avatar: "https://placehold.co/40x40",
-                },
+                // {
+                //     id: 1,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     avatar: "",
+                // },
+                // {
+                //     id: 2,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     avatar: "",
+                // },
+                // {
+                //     id: 3,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     avatar: "",
+                // },
             ],
         };
     },
