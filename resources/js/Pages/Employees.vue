@@ -4,23 +4,32 @@
         <div class="flex-1 p-4 ml-[250px]">
             <!-- Search bar and Add button -->
             <div class="flex justify-between items-center mb-4">
-                <div class="relative">
+                <!-- Search bar and Search button -->
+                <div class="flex items-center gap-2">
                     <input
                         type="text"
                         placeholder="Search..."
                         class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                         v-model="searchQuery"
                     />
+                    <button
+                        class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        @click="toggleAttendance"
+                    >
+                        Search Employee
+                    </button>
                 </div>
+
+                <!-- Add Employee Button -->
                 <button
-                    class="ml-2 rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
                     @click="showAddEmployeeModal = true"
                 >
                     Add Employee Record
                 </button>
             </div>
 
-            <!-- Table container -->
+            <!-- Employee Table -->
             <div
                 class="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg bg-white"
             >
@@ -31,16 +40,14 @@
                         class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
                     >
                         <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">Contact No.</th>
-                            <th scope="col" class="px-6 py-3">Position</th>
-                            <th scope="col" class="px-6 py-3">Address</th>
-                            <th scope="col" class="px-6 py-3">Hire Date</th>
-                            <th scope="col" class="px-6 py-3">Employee ID</th>
-                            <th scope="col" class="px-6 py-3 text-right">
-                                Actions
-                            </th>
+                            <th class="px-6 py-3">Employee ID</th>
+                            <th class="px-6 py-3">Name</th>
+                            <th class="px-6 py-3">Email</th>
+                            <th class="px-6 py-3">Contact No.</th>
+                            <th class="px-6 py-3">Position</th>
+                            <th class="px-6 py-3">Address</th>
+                            <th class="px-6 py-3">Hire Date</th>
+                            <th class="px-6 py-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,9 +58,10 @@
                             <tr
                                 class="bg-white border-b border-gray-200 hover:bg-gray-50"
                             >
-                                <td
-                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                                >
+                                <td class="px-6 py-4 font-medium text-gray-900">
+                                    {{ employee.id }}
+                                </td>
+                                <td class="px-6 py-4 font-medium text-gray-900">
                                     <div class="flex items-center space-x-3">
                                         <img
                                             :src="employee.avatar"
@@ -76,16 +84,15 @@
                                 <td class="px-6 py-4">
                                     {{ employee.hireDate }}
                                 </td>
-                                <td class="px-6 py-4">{{ employee.id }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <button
-                                        class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                                        class="text-gray-500 hover:text-[#E64444]"
                                         @click="openEditModal(employee)"
                                     >
                                         Edit
                                     </button>
                                     <button
-                                        class="ml-4 text-gray-500 hover:text-red-600 focus:outline-none"
+                                        class="ml-4 text-gray-500 hover:text-red-600"
                                         @click="openDeleteModal(employee)"
                                     >
                                         Delete
@@ -100,15 +107,13 @@
     </div>
 
     <!-- Modals -->
-
-    <!-- Add Employee Modal -->
     <div
         v-if="showAddEmployeeModal"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
             <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444] focus:outline-none"
+                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
                 @click="showAddEmployeeModal = false"
             >
                 ✕
@@ -120,14 +125,13 @@
         </div>
     </div>
 
-    <!-- Edit Employee Modal -->
     <div
         v-if="showEditEmployeeModal"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
             <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444] focus:outline-none"
+                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
                 @click="showEditEmployeeModal = false"
             >
                 ✕
@@ -142,14 +146,13 @@
         </div>
     </div>
 
-    <!-- Delete Employee Modal -->
     <div
         v-if="showDeleteEmployeeModal"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
             <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444] focus:outline-none"
+                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
                 @click="showDeleteEmployeeModal = false"
             >
                 ✕
@@ -166,7 +169,6 @@
         </div>
     </div>
 
-    <!-- Delete Success Notification -->
     <div
         v-if="showDeleteSuccess"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
@@ -195,6 +197,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Search Result Modal -->
+    <div
+        v-if="showAttendanceModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div
+            class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative"
+        >
+            <button
+                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showAttendanceModal = false"
+            >
+                ✕
+            </button>
+            <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
+                {{ searchQuery }}
+            </h2>
+            <EmployeeRecord :employees="filteredEmployees" />
+        </div>
+    </div>
 </template>
 
 <script>
@@ -202,6 +225,7 @@ import SideBarOwner from "@/Components/side-bar-owner.vue";
 import AddEmployeeRecord from "../Components/add-employee-record.vue";
 import EditEmployeeRecord from "../Components/edit-employee.vue";
 import DeleteEmployee from "../Components/delete-employee.vue";
+import EmployeeRecord from "../Components/TablesandCharts/employee-record.vue";
 
 export default {
     name: "Employees",
@@ -210,6 +234,7 @@ export default {
         AddEmployeeRecord,
         EditEmployeeRecord,
         DeleteEmployee,
+        EmployeeRecord,
     },
     data() {
         return {
@@ -218,37 +243,39 @@ export default {
             showEditEmployeeModal: false,
             showDeleteEmployeeModal: false,
             showDeleteSuccess: false,
+            showAttendanceModal: false,
             selectedEmployee: null,
-            newEmployee: {
-                name: "",
-                position: "",
-                contact: "",
-            },
             employees: [
-                {
-                    id: 1,
-                    name: "Jennie",
-                    email: "jennie.bp@gmail.com",
-                    position: "Cashier",
-                    contact: "+6309019311",
-                    avatar: "https://placehold.co/40x40",
-                },
-                {
-                    id: 2,
-                    name: "Karina",
-                    email: "karina.bp@gmail.com",
-                    position: "Cashier",
-                    contact: "+6387653912",
-                    avatar: "https://placehold.co/40x40",
-                },
-                {
-                    id: 3,
-                    name: "Lisa",
-                    email: "lisa.bp@gmail.com",
-                    position: "Sales Clerk",
-                    contact: "+639058604",
-                    avatar: "https://placehold.co/40x40",
-                },
+                // {
+                //     id: 1,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     address: "",
+                //     hireDate: "",
+                //     avatar: "",
+                // },
+                // {
+                //     id: 2,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     address: "",
+                //     hireDate: "",
+                //     avatar: "",
+                // },
+                // {
+                //     id: 2,
+                //     name: "",
+                //     email: "",
+                //     position: "",
+                //     contact: "",
+                //     address: "",
+                //     hireDate: "",
+                //     avatar: "",
+                // },
             ],
         };
     },
@@ -262,9 +289,11 @@ export default {
         },
     },
     methods: {
+        toggleAttendance() {
+            this.showAttendanceModal = true;
+        },
         addEmployee(employeeData) {
             const newId = this.employees.length + 1;
-
             const avatarUrl =
                 employeeData.profilePicture || "https://placehold.co/40x40";
             const hireDate = new Date().toLocaleDateString();
@@ -277,17 +306,7 @@ export default {
             });
 
             this.showAddEmployeeModal = false;
-
-            this.newEmployee = {
-                id: null,
-                name: "",
-                email: "",
-                position: "",
-                contact: "",
-                profilePicture: null,
-            };
         },
-
         openEditModal(employee) {
             this.selectedEmployee = employee;
             this.showEditEmployeeModal = true;
