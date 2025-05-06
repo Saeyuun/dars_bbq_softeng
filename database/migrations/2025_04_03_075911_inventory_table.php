@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employee', 'employee_id')->onDelete('cascade');
             // $table->foreignId('item_id')->constrained('item', 'item_id')->onDelete('cascade');
             $table->integer('quantity');
-            $table->date('date_added');
             $table->string('status')->default('available'); // available, out_of_stock
             $table->timestamps();
         });

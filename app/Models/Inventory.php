@@ -10,7 +10,7 @@ class Inventory extends Model
 
     protected $primaryKey = 'inventory_id';
 
-    protected $fillable = ['item_id', 'employee_id', 'quantity', 'unit_price', 'total_price', 'supplier_id', 'purchase_date'];
+    protected $fillable = ['item_id', 'employee_id', 'quantity', 'status'];
 
     public function employee() {
         return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');

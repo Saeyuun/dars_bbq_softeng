@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import ProgresstrackerHeader from "@/components/Headers/progresstracker-header.vue";
-import SideBarOwner from "@/components/side-bar-owner.vue";
-import SalesReportChart from "@/components/TablesandCharts/sales-report-chart.vue";
+import ProgresstrackerHeader from "@/Components/Headers/progresstracker-header.vue";
+import SideBarOwner from "@/Components/side-bar-owner.vue";
+import SalesReportChart from "@/Components/TablesandCharts/sales-report-chart.vue";
 
 export default {
   name: "OwnerDashboard",

@@ -8,14 +8,14 @@ use Inertia\Inertia;
 
 class PageController extends Controller
 {
-    public function employeedashboard()
+    public function maindashboard()
     {
-        return Inertia::render('EmployeeDashboard');
+        return Inertia::render('OwnerDashboard');
     }
 
-    public function homepage()
+    public function employees()
     {
-        return Inertia::render('Homepage');
+        return Inertia::render('Employees');
     }
 
     public function inventory()

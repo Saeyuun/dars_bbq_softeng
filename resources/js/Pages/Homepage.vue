@@ -10,12 +10,13 @@
       >
       <a href="#" class="text-white font-semibold py-2">Contact Us</a>
       <a href="#" class="text-white font-semibold py-2">Location</a>
+      <!-- <Link href = "/dashboard"> -->
       <button
         class="bg-[#E64444] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#c33] focus:outline-none focus:ring-2 focus:ring-[#E64444]"
-        @click="navigateToLogin"
-      >
+        @click="goToDashboard">
         Login Here
       </button>
+    <!-- </Link> -->
     </nav>
   </header>
 
@@ -70,6 +71,12 @@
 
 <script>
 import backgroundImage from "@/assets/image2.png";
+import { Link } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
+
+function goToReports() {
+  router.visit('/employees')
+}
 
 export default {
   name: "Homepage",

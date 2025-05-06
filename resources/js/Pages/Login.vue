@@ -67,7 +67,7 @@
     },
     methods: {
       handleLogin() {
-        this.$router.push({ name: "Dashboard" });
+        this.$router.push({ name: "Employees" });
       },
     },
   };

@@ -17,18 +17,17 @@ use Inertia\Inertia;
 // });
 
 
-Route::get('/dashboard', [PageController::class, 'employeedashboard']);
+Route::get('/dashboard', [PageController::class, 'maindashboard']);
 Route::get('/employees', [PageController::class, 'employees']);
-Route::get('/homepage', [PageController::class, 'homepage']);
 Route::get('/inventory', [PageController::class, 'inventory']);
 Route::get('/attendance', [PageController::class, 'attendance']);
 Route::get('/history', [PageController::class, 'history']);
 
-
-
 Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return Inertia::render('Homepage');
+});
+
+//)->middleware(['auth', 'verified'])->name('Employees') Pang authenticate daw
 
 Route::resource('employees', EmployeeController::class);
 
