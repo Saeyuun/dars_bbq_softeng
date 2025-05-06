@@ -27,6 +27,8 @@ Route::get('/', function () {
     return Inertia::render('Homepage');
 });
 
+Route::inertia('/login', 'Login');
+
 //)->middleware(['auth', 'verified'])->name('Employees') Pang authenticate daw
 
 Route::resource('employees', EmployeeController::class);
