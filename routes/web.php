@@ -31,7 +31,7 @@ Route::inertia('/login', 'Login');
 
 //)->middleware(['auth', 'verified'])->name('Employees') Pang authenticate daw
 
-Route::resource('employees', EmployeeController::class);
+//Route::resource('employees', EmployeeController::class);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

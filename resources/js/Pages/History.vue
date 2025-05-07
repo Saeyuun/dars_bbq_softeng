@@ -1,4 +1,5 @@
 <template>
+    <Head title="History" />
     <div class="flex min-h-screen bg-gray-50">
         <div class="w-64 bg-white">
             <SideBarEmployee />
@@ -111,13 +112,14 @@
 import HistoryHeader from "@/Components/Headers/history-header.vue";
 import SideBarEmployee from "@/Components/side-bar-employee.vue";
 import DateFilter from "@/Components/date-filter.vue";
-
+import { Head } from "@inertiajs/inertia-vue3";
 export default {
     name: "History",
     components: {
         HistoryHeader,
         SideBarEmployee,
         DateFilter,
+        Head,
     },
     data() {
         return {

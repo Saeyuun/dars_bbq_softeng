@@ -1,4 +1,5 @@
 <template>
+    <Head title="Employee Management" />
     <div class="flex min-h-screen">
         <SideBarOwner />
         <div class="flex-1 p-4 ml-[250px]">
@@ -63,11 +64,20 @@
                                 </td>
                                 <td class="px-6 py-4 font-medium text-gray-900">
                                     <div class="flex items-center space-x-3">
-                                        <img
-                                            :src="employee.avatar"
-                                            alt="Avatar"
-                                            class="w-8 h-8 rounded-full"
-                                        />
+                                        <button
+                                            @click="
+                                                showProfileImage(
+                                                    employee.avatar
+                                                )
+                                            "
+                                        >
+                                            <img
+                                                :src="employee.avatar"
+                                                alt="Avatar"
+                                                class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]"
+                                            />
+                                        </button>
+
                                         <span>{{ employee.name }}</span>
                                     </div>
                                 </td>
@@ -107,6 +117,7 @@
     </div>
 
     <!-- Modals -->
+
     <div
         v-if="showAddEmployeeModal"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
@@ -218,6 +229,43 @@
             <EmployeeRecord :employees="filteredEmployees" />
         </div>
     </div>
+
+    <!-- Clickable Image -->
+    <div
+        v-if="showProfileImageModal"
+        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+        @click.self="showProfileImageModal = false"
+    >
+        <div class="relative bg-white rounded-lg shadow-lg p-4 max-w-md w-full">
+            <!-- Close Button -->
+            <button
+                class="absolute -top-3 -right-3 bg-white rounded-full shadow-md p-1 hover:bg-gray-100"
+                @click="showProfileImageModal = false"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-700"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+            </button>
+
+            <!-- Image -->
+            <img
+                :src="selectedProfileImage"
+                alt="Profile"
+                class="w-full h-auto rounded-md"
+            />
+        </div>
+    </div>
 </template>
 
 <script>
@@ -226,7 +274,7 @@ import AddEmployeeRecord from "../Components/add-employee-record.vue";
 import EditEmployeeRecord from "../Components/edit-employee.vue";
 import DeleteEmployee from "../Components/delete-employee.vue";
 import EmployeeRecord from "../Components/TablesandCharts/employee-record.vue";
-
+import { Head } from "@inertiajs/vue3";
 export default {
     name: "Employees",
     components: {
@@ -235,6 +283,7 @@ export default {
         EditEmployeeRecord,
         DeleteEmployee,
         EmployeeRecord,
+        Head,
     },
     data() {
         return {
@@ -245,6 +294,9 @@ export default {
             showDeleteSuccess: false,
             showAttendanceModal: false,
             selectedEmployee: null,
+            showProfileImageModal: false,
+            selectedProfileImage: null,
+
             employees: [
                 // {
                 //     id: 1,
@@ -333,6 +385,10 @@ export default {
             setTimeout(() => {
                 this.showDeleteSuccess = false;
             }, 1100);
+        },
+        showProfileImage(imageUrl) {
+            this.selectedProfileImage = imageUrl;
+            this.showProfileImageModal = true;
         },
     },
 };

@@ -231,7 +231,7 @@ h1 {
     font-size: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     transition: background-color 0.3s ease;
     margin-top: 1.5rem;
 }

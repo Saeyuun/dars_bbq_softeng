@@ -1,4 +1,5 @@
 <template>
+    <Head title="Inventory Management" />
     <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
         <div
             class="sm:hidden flex items-center justify-between p-4 bg-white shadow-md"
@@ -218,6 +219,7 @@ import InventoryHeader from "@/Components/Headers/inventory-header.vue";
 import AddItem from "@/Components/add-item.vue";
 import EditItem from "@/Components/edit-item.vue";
 import UpdateStock from "@/Components/update-stock.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -226,6 +228,7 @@ export default {
         AddItem,
         EditItem,
         UpdateStock,
+        Head,
     },
     data() {
         return {
