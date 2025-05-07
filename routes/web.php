@@ -17,11 +17,6 @@ use Inertia\Inertia;
 // });
 
 
-Route::get('/dashboard', [PageController::class, 'maindashboard']);
-Route::get('/employees', [PageController::class, 'employees']);
-Route::get('/inventory', [PageController::class, 'inventory']);
-Route::get('/attendance', [PageController::class, 'attendance']);
-Route::get('/history', [PageController::class, 'history']);
 
 Route::get('/', function () {
     return Inertia::render('Homepage');
@@ -29,14 +24,15 @@ Route::get('/', function () {
 
 Route::inertia('/login', 'Login');
 
-//)->middleware(['auth', 'verified'])->name('Employees') Pang authenticate daw
-
-Route::resource('employees', EmployeeController::class);
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/dashboard', [PageController::class, 'maindashboard']);
+    Route::get('/employees', [PageController::class, 'employees']);
+    Route::get('/inventory', [PageController::class, 'inventory']);
+    Route::get('/attendance', [PageController::class, 'attendance']);
+    Route::get('/history', [PageController::class, 'history']);
 });
 
 require __DIR__ . '/auth.php';
