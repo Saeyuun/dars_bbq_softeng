@@ -31,9 +31,8 @@
                 </button>
             </div>
 
-            <div
-                class="hidden sm:block overflow-x-auto bg-white shadow rounded"
-            >
+            <!-- Responsive Table: always visible, scrollable on mobile -->
+            <div class="overflow-x-auto bg-white shadow rounded mb-4">
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
@@ -91,6 +90,7 @@
                 </table>
             </div>
 
+            <!-- Mobile Card View (optional, can be removed if you want only the table) -->
             <div class="sm:hidden space-y-4">
                 <div
                     v-for="item in filteredItems"

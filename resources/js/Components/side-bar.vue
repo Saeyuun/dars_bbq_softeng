@@ -7,7 +7,6 @@
                 src="https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg"
             />
             <p class="profile-name">Winter</p>
-            <p class="profile-role">Owner</p>
         </div>
 
         <nav class="nav-links">
