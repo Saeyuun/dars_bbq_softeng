@@ -1,8 +1,9 @@
 <template>
+    <Head title="Attendance" />
     <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
         <!-- Sidebar -->
         <div class="w-64">
-            <SideBarEmployee />
+            <Sidebar />
         </div>
 
         <!-- Main Content -->
@@ -159,13 +160,15 @@
 
 <script>
 import DateFilter from "@/Components/date-filter.vue";
-import SideBarEmployee from "@/Components/side-bar-employee.vue";
+import Sidebar from "@/Components/side-bar.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     name: "Attendance",
     components: {
-        SideBarEmployee,
+        Sidebar,
         DateFilter,
+        Head,
     },
 
     computed: {

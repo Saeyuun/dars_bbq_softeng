@@ -1,11 +1,15 @@
 <script setup>
-import Checkbox from '@/Components/authComponents/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/authComponents/InputError.vue';
-import InputLabel from '@/Components/authComponents/InputLabel.vue';
-import PrimaryButton from '@/Components/authComponents/PrimaryButton.vue';
-import TextInput from '@/Components/authComponents/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import Checkbox from "@/Components/authComponents/Checkbox.vue";
+import GuestLayout from "@/Layouts/GuestLayout.vue";
+import InputError from "@/Components/authComponents/InputError.vue";
+import InputLabel from "@/Components/authComponents/InputLabel.vue";
+import PrimaryButton from "@/Components/authComponents/PrimaryButton.vue";
+import TextInput from "@/Components/authComponents/TextInput.vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+
+// Import local images
+import logo from "@/Assets/image-1.png";
+import bgImage from "@/Assets/Image2.png";
 
 defineProps({
     canResetPassword: {
@@ -17,84 +21,115 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     remember: false,
 });
 
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+    form.post(route("login"), {
+        onFinish: () => form.reset("password"),
     });
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
-
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
+    <div class="flex min-h-screen">
+        <!-- Left Side: Logo, Title, Form -->
+        <div
+            class="w-full md:w-1/2 flex flex-col justify-center items-center bg-white px-8 py-6"
+        >
+            <!-- Logo -->
+            <div class="absolute top-4 left-4 flex items-center">
+                <img :src="logo" alt="Logo" class="h-12 w-12 object-contain" />
+            </div>
+            <!-- Title -->
+            <div class="w-full max-w-md mt-16 mb-2">
+                <h1 class="text-3xl font-semibold text-gray-800 mb-2">
+                    Dar’s BBQ
+                </h1>
+                <h2 class="text-2xl font-bold text-black text-center mb-6">
+                    Log In
+                </h2>
+                <div
+                    v-if="status"
+                    class="mb-4 text-sm font-medium text-green-600"
+                >
+                    {{ status }}
+                </div>
+                <form @submit.prevent="submit" class="space-y-4">
+                    <div>
+                        <InputLabel
+                            for="email"
+                            value="Email"
+                            class="text-base text-gray-700"
+                        />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class="mt-1 block w-full border-2 border-[#7B2E2E] rounded-md focus:border-[#7B2E2E] focus:ring-0"
+                            v-model="form.email"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        />
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
+                    <div>
+                        <InputLabel
+                            for="password"
+                            value="Password"
+                            class="text-base text-gray-700"
+                        />
+                        <TextInput
+                            id="password"
+                            type="password"
+                            class="mt-1 block w-full border-2 border-[#7B2E2E] rounded-md focus:border-[#7B2E2E] focus:ring-0"
+                            v-model="form.password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.password"
+                        />
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <label class="flex items-center">
+                            <Checkbox
+                                name="remember"
+                                v-model:checked="form.remember"
+                            />
+                            <span class="ml-2 text-sm text-gray-500"
+                                >Remember me?</span
+                            >
+                        </label>
+                        <Link
+                            v-if="canResetPassword"
+                            :href="route('password.request')"
+                            class="text-sm text-[#7B2E2E] hover:underline"
+                        >
+                            Forgot Password
+                        </Link>
+                    </div>
+                    <div class="flex justify-center mt-4">
+                        <PrimaryButton
+                            class="w-56 bg-[#7B2E2E] hover:bg-[#5a1e1e] text-white py-2 rounded font-semibold text-base shadow-md mt-2 transition justify-center"
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                        >
+                            Sign in
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
-                </label>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+        <!-- Right Side: BBQ Image -->
+        <div class="hidden md:block md:w-1/2 h-screen relative">
+            <div class="absolute inset-0 bg-black bg-opacity-20 z-10"></div>
+            <img :src="bgImage" alt="BBQ" class="w-full h-full object-cover" />
+        </div>
+    </div>
 </template>
+
+<style scoped></style>

@@ -4,10 +4,10 @@
         <div class="profile-section">
             <img
                 class="w-36 h-36 rounded-[30px] mx-auto"
-                src="https://placehold.co/150x140"
+                src="https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg"
             />
-            <p class="profile-name">Karina</p>
-            <p class="profile-role">Employee</p>
+            <p class="profile-name">Winter</p>
+            <p class="profile-role">Owner</p>
         </div>
 
         <nav class="nav-links">
@@ -69,6 +69,25 @@
                 </span>
                 History
             </a>
+
+            <a href="#" class="nav-link" @click.prevent="goToEmployees">
+                <span class="icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 20h5v-2a4 4 0 00-5-4m-6 6v-2a4 4 0 015-4m-6 6H6v-2a4 4 0 015-4m-6 6a4 4 0 01-4-4v-2a4 4 0 014-4m6 6a4 4 0 004-4v-2a4 4 0 00-4-4m0 0a4 4 0 00-4 4v2a4 4 0 004 4z"
+                        />
+                    </svg>
+                </span>
+                Employees
+            </a>
         </nav>
 
         <button class="logout-button" @click="handleLogout">
@@ -94,7 +113,7 @@
 
 <script>
 export default {
-    name: "SidebarOwner",
+    name: "Sidebar",
     methods: {
         handleLogout() {
             this.$router.push({ name: "Login" });
@@ -107,6 +126,9 @@ export default {
         },
         goToDashboard() {
             this.$router.push({ name: "Dashboard" });
+        },
+        goToEmployees() {
+            this.$router.push({ name: "Employees" });
         },
     },
 };
@@ -209,7 +231,7 @@ h1 {
     font-size: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     transition: background-color 0.3s ease;
     margin-top: 1.5rem;
 }
