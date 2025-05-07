@@ -1,38 +1,40 @@
 <template>
     <Head title="Employee Management" />
-    <div class="flex min-h-screen">
-        <SideBarOwner />
-        <div class="flex-1 p-4 ml-[250px]">
-            <!-- Search bar and Add button -->
-            <div class="flex justify-between items-center mb-4">
-                <!-- Search bar and Search button -->
-                <div class="flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row min-h-screen">
+        <div class="hidden sm:block">
+            <Sidebar />
+        </div>
+        <div class="flex-1 p-4 sm:ml-[250px]">
+            <div
+                class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4"
+            >
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center gap-2 w-full"
+                >
                     <input
                         type="text"
                         placeholder="Search..."
-                        class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
+                        class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                         v-model="searchQuery"
                     />
                     <button
-                        class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                        class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
                         @click="toggleAttendance"
                     >
                         Search Employee
                     </button>
                 </div>
 
-                <!-- Add Employee Button -->
                 <button
-                    class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 w-full sm:w-auto"
                     @click="showAddEmployeeModal = true"
                 >
                     Add Employee Record
                 </button>
             </div>
 
-            <!-- Employee Table -->
             <div
-                class="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg bg-white"
+                class="hidden sm:block relative overflow-x-auto max-w-full shadow-md sm:rounded-lg bg-white"
             >
                 <table
                     class="min-w-[640px] w-full text-sm text-left text-gray-500"
@@ -77,7 +79,6 @@
                                                 class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]"
                                             />
                                         </button>
-
                                         <span>{{ employee.name }}</span>
                                     </div>
                                 </td>
@@ -113,9 +114,66 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="sm:hidden space-y-4">
+                <div
+                    v-for="employee in filteredEmployees"
+                    :key="employee.id"
+                    class="bg-white rounded shadow p-4"
+                >
+                    <div class="flex items-center space-x-3 mb-2">
+                        <button @click="showProfileImage(employee.avatar)">
+                            <img
+                                :src="employee.avatar"
+                                alt="Avatar"
+                                class="w-10 h-10 rounded-full hover:ring-2 hover:ring-[#E64444]"
+                            />
+                        </button>
+                        <div class="font-bold text-[#E64444] text-lg">
+                            {{ employee.name }}
+                        </div>
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">ID:</span> {{ employee.id }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Email:</span>
+                        {{ employee.email }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Contact:</span>
+                        {{ employee.contact }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Position:</span>
+                        {{ employee.position }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Address:</span>
+                        {{ employee.address }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Hire Date:</span>
+                        {{ employee.hireDate }}
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-2">
+                        <button
+                            class="text-gray-500 hover:text-[#E64444]"
+                            @click="openEditModal(employee)"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            class="text-gray-500 hover:text-red-600"
+                            @click="openDeleteModal(employee)"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
     <!-- Modals -->
 
     <div
@@ -269,7 +327,7 @@
 </template>
 
 <script>
-import SideBarOwner from "@/Components/side-bar-owner.vue";
+import Sidebar from "@/Components/side-bar.vue";
 import AddEmployeeRecord from "../Components/add-employee-record.vue";
 import EditEmployeeRecord from "../Components/edit-employee.vue";
 import DeleteEmployee from "../Components/delete-employee.vue";
@@ -278,7 +336,7 @@ import { Head } from "@inertiajs/vue3";
 export default {
     name: "Employees",
     components: {
-        SideBarOwner,
+        Sidebar,
         AddEmployeeRecord,
         EditEmployeeRecord,
         DeleteEmployee,

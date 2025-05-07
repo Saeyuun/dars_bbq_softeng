@@ -2,23 +2,21 @@
     <Head title="Inventory Management" />
     <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
         <div
-            class="sm:hidden flex items-center justify-between p-4 bg-white shadow-md"
+            class="sm:hidden flex items-center justify-center p-4 bg-white shadow-md"
         >
             <h1 class="text-xl font-bold text-[#E64444]">Inventory</h1>
         </div>
 
-        <div v-show="sidebarOpen || isWideScreen" class="w-full sm:w-64">
-            <SidebarEmployee />
+        <div class="hidden sm:block w-64">
+            <Sidebar />
         </div>
 
-        <!-- Main content -->
         <div class="flex-1 p-4">
-            <!-- Header -->
             <div class="flex justify-between items-center mb-4">
                 <InventoryHeader />
             </div>
 
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col sm:flex-row gap-2 w-full mb-4">
                 <input
                     v-model="searchQuery"
                     type="text"
@@ -27,7 +25,7 @@
                 />
                 <button
                     @click="showAddItemModal = true"
-                    class="bg-[#E64444] text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    class="w-full sm:w-auto bg-[#E64444] text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
                 >
                     Add Item
                 </button>
@@ -91,6 +89,56 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="sm:hidden space-y-4">
+                <div
+                    v-for="item in filteredItems"
+                    :key="item.id"
+                    class="bg-white rounded shadow p-4"
+                >
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="font-bold text-[#E64444]">
+                            {{ item.name }}
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            ID: {{ item.id }}
+                        </div>
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Status:</span>
+                        {{ item.status }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Quantity:</span>
+                        {{ item.quantity }}
+                    </div>
+                    <div class="text-sm mb-1">
+                        <span class="font-semibold">Date:</span>
+                        {{ item.dateUpdated }}
+                    </div>
+                    <!-- Description hidden on mobile for clarity -->
+                    <div class="flex justify-end space-x-2 mt-2">
+                        <button
+                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                            @click="openEditModal(item)"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                            @click="openUpdateStockModal(item)"
+                        >
+                            Update
+                        </button>
+                        <button
+                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                            @click="openDeleteModal(item)"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
             </div>
             <div
                 v-if="deleteSuccessMessage"
@@ -194,16 +242,18 @@
                 <p class="text-center text-gray-600 mb-6">
                     Are you sure you want to delete this item?
                 </p>
-                <div class="flex justify-center space-x-4">
+                <div
+                    class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4"
+                >
                     <button
                         @click="confirmDelete"
-                        class="bg-[#E64444] text-white px-4 py-2 rounded hover:bg-red-600"
+                        class="w-full sm:w-auto bg-[#E64444] text-white px-4 py-2 rounded hover:bg-red-600"
                     >
-                        Yes, Delete
+                        Delete
                     </button>
                     <button
                         @click="showDeleteModal = false"
-                        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                        class="w-full sm:w-auto bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                     >
                         Cancel
                     </button>
@@ -214,7 +264,7 @@
 </template>
 
 <script>
-import SidebarEmployee from "@/Components/side-bar-employee.vue";
+import Sidebar from "@/Components/side-bar.vue";
 import InventoryHeader from "@/Components/Headers/inventory-header.vue";
 import AddItem from "@/Components/add-item.vue";
 import EditItem from "@/Components/edit-item.vue";
@@ -223,7 +273,7 @@ import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
-        SidebarEmployee,
+        Sidebar,
         InventoryHeader,
         AddItem,
         EditItem,

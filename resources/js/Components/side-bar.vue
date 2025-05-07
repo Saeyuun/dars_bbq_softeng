@@ -113,7 +113,7 @@
 
 <script>
 export default {
-    name: "SidebarOwner",
+    name: "Sidebar",
     methods: {
         handleLogout() {
             this.$router.push({ name: "Login" });
