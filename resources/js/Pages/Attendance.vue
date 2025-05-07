@@ -1,15 +1,19 @@
 <template>
     <Head title="Attendance" />
     <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
-        <!-- Sidebar -->
-        <div class="w-64">
+        <div class="hidden sm:block w-64">
             <Sidebar />
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 p-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6 items-start">
-                <div class="bg-white p-6 rounded-lg shadow-md max-w-sm w-full">
+        <div class="flex-1 p-4 sm:p-6">
+            <div
+                class="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:gap-6 mb-6 items-start"
+            >
+                <!-- Check In/Out Card -->
+                <div
+                    class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full sm:max-w-sm"
+                >
                     <h2 class="text-lg font-bold text-[#E64444] mb-4">
                         {{
                             !isTimedIn
@@ -52,7 +56,7 @@
 
                 <!-- Schedule Card -->
                 <div
-                    class="bg-white p-6 rounded-lg shadow-md max-w-sm w-full sm:justify-self-end sm:mr-8 min-h-[200px]"
+                    class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full sm:max-w-sm sm:justify-self-end sm:mr-8 min-h-[200px]"
                 >
                     <h2 class="text-lg font-bold text-[#E64444] mb-4">
                         Schedule
@@ -82,17 +86,20 @@
 
             <!-- Attendance Record -->
             <div>
-                <div class="flex justify-between items-center mb-4">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2"
+                >
                     <h2 class="text-lg font-bold text-[#E64444]">
                         Attendance Record
                     </h2>
-                    <div class="relative">
+                    <div class="relative w-full sm:w-auto">
                         <DateFilter v-model="selectedDate" />
                     </div>
                 </div>
 
-                <!-- Attendance Table -->
-                <div class="overflow-x-auto bg-white shadow rounded-lg">
+                <div
+                    class="hidden sm:block overflow-x-auto bg-white shadow rounded-lg"
+                >
                     <table class="min-w-full text-sm text-gray-700">
                         <thead
                             class="bg-gray-100 text-xs uppercase text-gray-600"
@@ -129,6 +136,39 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="sm:hidden space-y-4 mt-4">
+                    <div
+                        v-for="(record, index) in filteredRecords"
+                        :key="index"
+                        class="bg-white rounded shadow p-4"
+                    >
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-semibold text-[#E64444]">{{
+                                record.date
+                            }}</span>
+                            <span class="text-xs text-gray-500"
+                                >#{{ index + 1 }}</span
+                            >
+                        </div>
+                        <div class="text-sm mb-1">
+                            <span class="font-semibold">Remarks:</span>
+                            {{ record.remarks }}
+                        </div>
+                        <div class="text-sm mb-1">
+                            <span class="font-semibold">Time In:</span>
+                            {{ record.timeIn }}
+                        </div>
+                        <div class="text-sm mb-1">
+                            <span class="font-semibold">Time Out:</span>
+                            {{ record.timeOut }}
+                        </div>
+                        <div class="text-sm mb-1">
+                            <span class="font-semibold">Overtime:</span>
+                            {{ record.overtime }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

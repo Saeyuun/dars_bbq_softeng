@@ -33,15 +33,9 @@
                 </button>
             </div>
 
-            <div
-                class="hidden sm:block relative overflow-x-auto max-w-full shadow-md sm:rounded-lg bg-white"
-            >
-                <table
-                    class="min-w-[640px] w-full text-sm text-left text-gray-500"
-                >
-                    <thead
-                        class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
-                    >
+            <div class="overflow-x-auto bg-white shadow rounded mb-4">
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
                             <th class="px-6 py-3">Employee ID</th>
                             <th class="px-6 py-3">Name</th>
