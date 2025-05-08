@@ -31,7 +31,7 @@
                 </button>
             </div>
 
-            <!-- Responsive Table: always visible, scrollable on mobile -->
+            <!-- Responsive Table -->
             <div class="overflow-x-auto bg-white shadow rounded mb-4">
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
@@ -89,56 +89,12 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Mobile Card View (optional, can be removed if you want only the table) -->
-            <div class="sm:hidden space-y-4">
-                <div
-                    v-for="item in filteredItems"
-                    :key="item.id"
-                    class="bg-white rounded shadow p-4"
-                >
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="font-bold text-[#E64444]">
-                            {{ item.name }}
-                        </div>
-                        <div class="text-xs text-gray-500">
-                            ID: {{ item.id }}
-                        </div>
-                    </div>
-                    <div class="text-sm mb-1">
-                        <span class="font-semibold">Status:</span>
-                        {{ item.status }}
-                    </div>
-                    <div class="text-sm mb-1">
-                        <span class="font-semibold">Quantity:</span>
-                        {{ item.quantity }}
-                    </div>
-                    <div class="text-sm mb-1">
-                        <span class="font-semibold">Date:</span>
-                        {{ item.dateUpdated }}
-                    </div>
-                    <!-- Description hidden on mobile for clarity -->
-                    <div class="flex justify-end space-x-2 mt-2">
-                        <button
-                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                            @click="openEditModal(item)"
-                        >
-                            Edit
-                        </button>
-                        <button
-                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                            @click="openUpdateStockModal(item)"
-                        >
-                            Update
-                        </button>
-                        <button
-                            class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                            @click="openDeleteModal(item)"
-                        >
-                            Delete
-                        </button>
-                    </div>
-                </div>
+            <!-- Success Messages BELOW the table -->
+            <div
+                v-if="addSuccessMessage"
+                class="mt-4 p-4 bg-green-100 text-green-800 rounded"
+            >
+                {{ addSuccessMessage }}
             </div>
             <div
                 v-if="deleteSuccessMessage"
@@ -290,34 +246,8 @@ export default {
             selectedItem: null,
             searchQuery: "",
             deleteSuccessMessage: "",
-
-            // Partial data was initialized here for demonstration purposes
-            items: [
-                // {
-                //     id: 1,
-                //     name: "",
-                //     status: "",
-                //     quantity: "",
-                //     dateUpdated: "",
-                //     description: "",
-                // },
-                // {
-                //     id: 2,
-                //     name: "",
-                //     status: "",
-                //     quantity: "",
-                //     dateUpdated: "",
-                //     description: "",
-                // },
-                // {
-                //     id: 3,
-                //     name: "",
-                //     status: "",
-                //     quantity: "",
-                //     dateUpdated: "",
-                //     description: "",
-                // },
-            ],
+            addSuccessMessage: "",
+            items: [],
         };
     },
     computed: {
@@ -325,9 +255,6 @@ export default {
             return this.items.filter((item) =>
                 item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
             );
-        },
-        isWideScreen() {
-            return window.innerWidth >= 640;
         },
     },
     methods: {
@@ -339,6 +266,10 @@ export default {
             };
             this.items.push(newItem);
             this.showAddItemModal = false;
+            this.addSuccessMessage = "Item successfully added!";
+            setTimeout(() => {
+                this.addSuccessMessage = "";
+            }, 1000);
         },
         openEditModal(item) {
             this.selectedItem = { ...item };
@@ -373,11 +304,11 @@ export default {
             if (index !== -1) {
                 this.items.splice(index, 1);
                 this.deleteSuccessMessage = "Item successfully deleted!";
+                setTimeout(() => {
+                    this.deleteSuccessMessage = "";
+                }, 1000);
             }
             this.showDeleteModal = false;
-            setTimeout(() => {
-                this.deleteSuccessMessage = "";
-            }, 1000);
         },
     },
 };

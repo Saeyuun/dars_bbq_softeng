@@ -23,6 +23,7 @@ const submit = () => {
 };
 </script>
 <template>
+    <Head title="Forgot Password" />
     <div class="flex min-h-screen">
         <div
             class="w-full md:w-1/2 flex flex-col justify-center items-center bg-white px-8 py-6"
