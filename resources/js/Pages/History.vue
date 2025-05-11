@@ -1,20 +1,23 @@
 <template>
     <Head title="History" />
-    <div class="flex min-h-screen bg-gray-50">
-        <div class="w-64 bg-white">
+    <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
+        <!-- Sidebar only on screens >= sm -->
+        <div class="hidden sm:block w-64 bg-white">
             <Sidebar />
         </div>
 
-        <div class="flex-1 p-5">
+        <div class="flex-1 p-4 sm:p-5">
             <HistoryHeader />
 
-            <DateFilter @date-change="updateSelectedDate" />
+            <div class="mb-4">
+                <DateFilter @date-change="updateSelectedDate" />
+            </div>
 
-            <div class="flex mt-5">
+            <div class="flex flex-col lg:flex-row gap-4 mt-5">
                 <div
-                    class="flex-grow relative overflow-x-auto shadow-md sm:rounded-lg bg-white"
+                    class="w-full lg:flex-grow relative overflow-x-auto shadow-md sm:rounded-lg bg-white"
                 >
-                    <table class="w-full text-sm text-left text-gray-500">
+                    <table class="min-w-full text-sm text-left text-gray-500">
                         <thead
                             class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
                         >
@@ -72,9 +75,9 @@
                     </table>
                 </div>
 
-                <!-- Cards Section -->
-                <div class="ml-5 flex flex-col space-y-4">
-                    <!-- Low on Stock Card -->
+                <div
+                    class="flex flex-col space-y-4 w-full lg:w-72 mt-4 lg:mt-0"
+                >
                     <div class="bg-white p-4 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">Low on Stock</h3>
                         <p class="text-sm text-gray-500">
@@ -89,7 +92,6 @@
                         </button>
                     </div>
 
-                    <!-- No Stock Card -->
                     <div class="bg-white p-4 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold">No Stock</h3>
                         <p class="text-sm text-gray-500">

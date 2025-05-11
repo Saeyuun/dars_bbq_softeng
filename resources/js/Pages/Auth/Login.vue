@@ -1,13 +1,12 @@
 <script setup>
 import Checkbox from "@/Components/authComponents/Checkbox.vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
+
 import InputError from "@/Components/authComponents/InputError.vue";
 import InputLabel from "@/Components/authComponents/InputLabel.vue";
 import PrimaryButton from "@/Components/authComponents/PrimaryButton.vue";
 import TextInput from "@/Components/authComponents/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 
-// Import local images
 import logo from "@/Assets/image-1.png";
 import bgImage from "@/Assets/Image2.png";
 
@@ -34,16 +33,15 @@ const submit = () => {
 </script>
 
 <template>
+    <Head title="Log In" />
     <div class="flex min-h-screen">
-        <!-- Left Side: Logo, Title, Form -->
         <div
             class="w-full md:w-1/2 flex flex-col justify-center items-center bg-white px-8 py-6"
         >
-            <!-- Logo -->
             <div class="absolute top-4 left-4 flex items-center">
                 <img :src="logo" alt="Logo" class="h-12 w-12 object-contain" />
             </div>
-            <!-- Title -->
+
             <div class="w-full max-w-md mt-16 mb-2">
                 <h1 class="text-3xl font-semibold text-gray-800 mb-2">
                     Dar’s BBQ
@@ -124,12 +122,10 @@ const submit = () => {
                 </form>
             </div>
         </div>
-        <!-- Right Side: BBQ Image -->
+
         <div class="hidden md:block md:w-1/2 h-screen relative">
             <div class="absolute inset-0 bg-black bg-opacity-20 z-10"></div>
             <img :src="bgImage" alt="BBQ" class="w-full h-full object-cover" />
         </div>
     </div>
 </template>
-
-<style scoped></style>

@@ -1,17 +1,14 @@
 <template>
     <div
-        class="p-6 -mt-13 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl shadow-lg"
+        class="max-w-5xl mx-auto w-full p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl shadow-lg mt-6"
     >
-        <h3 class="text-xl font-semibold text-zinc-400 mb-2 -ml-170">
-            Statistics
-        </h3>
+        <h3 class="text-xl font-semibold text-zinc-400 mb-1">Statistics</h3>
         <h4
-            class="text-[#732222] font-semibold font-inter text-[25px] leading-[42.9px] mb-4 -ml-157"
+            class="text-[#732222] font-semibold font-inter text-2xl leading-tight mb-4"
         >
             Sales report
         </h4>
 
-        <!-- Buttons -->
         <div class="flex justify-end mb-4 space-x-2">
             <button
                 @click="showTableModal = true"
@@ -19,17 +16,65 @@
             >
                 View Sales and Cost
             </button>
-            <button
-                @click="showTableModal = false"
-                class="ml-2 rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-[#c33] hover:scale-105 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#E64444] -mt-14"
-            >
-                View Yearly Report
-            </button>
         </div>
 
-        <!-- Chart -->
-        <div class="bg-white shadow-md rounded-lg p-4">
-            <canvas id="myChart"></canvas>
+        <div
+            class="bg-white shadow-md rounded-lg p-4 max-w-3xl mx-auto h-80 flex items-center justify-center"
+        >
+            <canvas id="myChart" class="w-full h-full"></canvas>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+            <div
+                class="flex-1 bg-white rounded-2xl shadow p-6 min-w-[250px] max-w-xs mx-auto"
+            >
+                <div class="text-sm text-gray-400 font-semibold mb-1">
+                    Yearly Report
+                </div>
+                <div class="text-lg font-bold text-gray-900 mb-1">
+                    Chicken Toppings Sale
+                </div>
+                <div class="flex items-end gap-4">
+                    <div>
+                        <div
+                            class="text-4xl font-extrabold text-gray-900 leading-none"
+                        >
+                            635
+                        </div>
+                        <div class="text-green-500 font-semibold text-sm mt-1">
+                            +21.01%
+                        </div>
+                    </div>
+                    <canvas
+                        id="chickenToppingsChart"
+                        class="w-24 h-16"
+                    ></canvas>
+                </div>
+            </div>
+
+            <div
+                class="flex-1 bg-white rounded-2xl shadow p-6 min-w-[250px] max-w-xs mx-auto"
+            >
+                <div class="text-sm text-gray-400 font-semibold mb-1">
+                    Yearly Report
+                </div>
+                <div class="text-lg font-bold text-gray-900 mb-1">
+                    Pork Toppings Sale
+                </div>
+                <div class="flex items-end gap-4">
+                    <div>
+                        <div
+                            class="text-4xl font-extrabold text-gray-900 leading-none"
+                        >
+                            325
+                        </div>
+                        <div class="text-green-500 font-semibold text-sm mt-1">
+                            +18.34%
+                        </div>
+                    </div>
+                    <canvas id="porkToppingsChart" class="w-24 h-16"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="flex justify-center space-x-4 mt-4">
@@ -48,134 +93,37 @@
             </button>
         </div>
 
-        <!-- Sales and Cost Table Modal -->
         <div
             v-if="showTableModal"
             class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex justify-center items-center z-50"
         >
-            <div class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full">
-                <!-- Close Button -->
+            <div
+                class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative"
+            >
                 <button
                     @click="showTableModal = false"
-                    class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444] focus:outline-none"
+                    class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444] focus:outline-none text-2xl"
                 >
                     ✕
                 </button>
-
-                <!-- Sales and Costs Tables -->
-                <div class="grid grid-cols-1 gap-6">
-                    <!-- Sales Report Table -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <div class="flex justify-between items-center mb-4">
+                        <div class="flex justify-between items-center mb-2">
                             <h3 class="text-lg font-semibold text-[#732222]">
                                 Sales Report
                             </h3>
                             <DateFilter v-model="salesDateFilter" />
                         </div>
-                        <table
-                            class="min-w-full text-sm text-left text-gray-500 border border-gray-200 rounded-lg"
-                        >
-                            <thead
-                                class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
-                            >
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        Order ID
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Total Price
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Created At
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Created By
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template
-                                    v-for="sale in filteredSalesData"
-                                    :key="sale.id"
-                                >
-                                    <tr
-                                        class="bg-white border-b border-gray-200 hover:bg-gray-50"
-                                    >
-                                        <td
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                                        >
-                                            {{ sale.id }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ sale.totalPrice }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ sale.date }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ sale.createdBy }}
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                        <SalesReportTable :filter-date="salesDateFilter" />
                     </div>
-
-                    <!-- Costs Report Table -->
                     <div>
-                        <div class="flex justify-between items-center mb-4">
+                        <div class="flex justify-between items-center mb-2">
                             <h3 class="text-lg font-semibold text-[#732222]">
                                 Costs Report
                             </h3>
                             <DateFilter v-model="costsDateFilter" />
                         </div>
-                        <table
-                            class="min-w-full text-sm text-left text-gray-500 border border-gray-200 rounded-lg"
-                        >
-                            <thead
-                                class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
-                            >
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        Cost ID
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Total Price
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Created At
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Created By
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template
-                                    v-for="cost in filteredCostsData"
-                                    :key="cost.id"
-                                >
-                                    <tr
-                                        class="bg-white border-b border-gray-200 hover:bg-gray-50"
-                                    >
-                                        <td
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                                        >
-                                            {{ cost.id }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ cost.totalPrice }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ cost.date }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ cost.createdBy }}
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                        <CostsReportTable :filter-date="costsDateFilter" />
                     </div>
                 </div>
             </div>
@@ -186,11 +134,15 @@
 <script>
 import Chart from "chart.js/auto";
 import DateFilter from "../date-filter.vue";
+import SalesReportTable from "./sales-report-table.vue";
+import CostsReportTable from "./costs-report-table.vue";
 
 export default {
     name: "SalesReportChart",
     components: {
         DateFilter,
+        SalesReportTable,
+        CostsReportTable,
     },
     data() {
         return {
@@ -273,6 +225,7 @@ export default {
         },
     },
     mounted() {
+        // Main chart
         const ctx = document.getElementById("myChart").getContext("2d");
         this.chart = new Chart(ctx, {
             type: "line",
@@ -332,6 +285,62 @@ export default {
                             },
                         },
                     },
+                },
+            },
+        });
+        // Chicken Toppings mini chart
+        const chickenCtx = document
+            .getElementById("chickenToppingsChart")
+            .getContext("2d");
+        new Chart(chickenCtx, {
+            type: "line",
+            data: {
+                labels: Array.from({ length: 10 }, (_, i) => i + 1),
+                datasets: [
+                    {
+                        data: [10, 20, 15, 30, 25, 50, 30, 25, 28, 32],
+                        borderColor: "#2563eb",
+                        backgroundColor: "transparent",
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0,
+                    },
+                ],
+            },
+            options: {
+                responsive: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false },
+                },
+            },
+        });
+        // Pork Toppings mini chart
+        const porkCtx = document
+            .getElementById("porkToppingsChart")
+            .getContext("2d");
+        new Chart(porkCtx, {
+            type: "line",
+            data: {
+                labels: Array.from({ length: 10 }, (_, i) => i + 1),
+                datasets: [
+                    {
+                        data: [5, 10, 18, 25, 40, 35, 30, 28, 32, 36],
+                        borderColor: "#22c55e",
+                        backgroundColor: "transparent",
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0,
+                    },
+                ],
+            },
+            options: {
+                responsive: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false },
                 },
             },
         });
