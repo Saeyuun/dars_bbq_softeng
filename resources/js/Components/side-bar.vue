@@ -2,10 +2,8 @@
     <div class="sidebar-container">
         <h1>Dar's BBQ</h1>
         <div class="profile-section">
-            <img
-                class="w-36 h-36 rounded-[30px] mx-auto"
-                src="https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg"
-            />
+            <img class="w-36 h-36 rounded-[30px] mx-auto"
+                src="https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg" />
             <p class="profile-name">Winter</p>
             <p class="profile-role">Owner</p>
         </div>
@@ -13,97 +11,52 @@
         <nav class="nav-links">
             <a href="#" class="home">Home</a>
 
-            <a href="#" class="nav-link" @click.prevent="goToDashboard">
-                <span class="icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M3 10h4V3H3v7zm0 11h4v-6H3v6zm7 0h4v-4h-4v4zm7 0h4V10h-4v11z"
-                        />
-                    </svg>
-                </span>
-                Dashboard
-            </a>
+            <Link href="/maindashboard" class="nav-link">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 10h4V3H3v7zm0 11h4v-6H3v6zm7 0h4v-4h-4v4zm7 0h4V10h-4v11z" />
+                </svg>
+            </span>
+            Dashboard
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToInventory">
-                <span class="icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4"
-                        />
-                    </svg>
-                </span>
-                Inventory
-            </a>
+            <Link href="/inventory" class="nav-link">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4" />
+                </svg>
+            </span>
+            Inventory
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToHistory">
-                <span class="icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
-                </span>
-                History
-            </a>
+            <Link href="/history" class="nav-link">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </span>
+            History
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToEmployees">
-                <span class="icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M17 20h5v-2a4 4 0 00-5-4m-6 6v-2a4 4 0 015-4m-6 6H6v-2a4 4 0 015-4m-6 6a4 4 0 01-4-4v-2a4 4 0 014-4m6 6a4 4 0 004-4v-2a4 4 0 00-4-4m0 0a4 4 0 00-4 4v2a4 4 0 004 4z"
-                        />
-                    </svg>
-                </span>
-                Employees
-            </a>
+            <Link href="/employees" class="nav-link">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a4 4 0 00-5-4m-6 6v-2a4 4 0 015-4m-6 6H6v-2a4 4 0 015-4m-6 6a4 4 0 01-4-4v-2a4 4 0 014-4m6 6a4 4 0 004-4v-2a4 4 0 00-4-4m0 0a4 4 0 00-4 4v2a4 4 0 004 4z" />
+                </svg>
+            </span>
+            Employees
+            </Link>
         </nav>
 
-        <button class="logout-button" @click="handleLogout">
+        <button class="logout-button" href="route('logout')">
             <span class="icon">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
-                    />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
                 </svg>
             </span>
             Logout
@@ -112,24 +65,17 @@
 </template>
 
 <script>
+import { Link } from "@inertiajs/vue3";
+import { router } from '@inertiajs/vue3'
+
+const logout = () => {
+    router.post('/logout')
+}
+
 export default {
     name: "Sidebar",
-    methods: {
-        handleLogout() {
-            this.$router.push({ name: "Login" });
-        },
-        goToInventory() {
-            this.$router.push({ name: "Inventory" });
-        },
-        goToHistory() {
-            this.$router.push({ name: "History" });
-        },
-        goToDashboard() {
-            this.$router.push({ name: "Dashboard" });
-        },
-        goToEmployees() {
-            this.$router.push({ name: "Employees" });
-        },
+    components: {
+        Link,
     },
 };
 </script>

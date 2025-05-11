@@ -95,63 +95,42 @@
 </template>
 
 <script>
+import { router } from "@inertiajs/vue3";
+
 export default {
-    name: "AddEmployeeRecord",
-    data() {
-        return {
-            newEmployee: {
-                id: null,
-                name: "",
-                email: "",
-                role: "",
-                contact: "",
-                profilePicture: null,
-            },
-        };
+  name: "AddEmployeeRecord",
+  data() {
+    return {
+      newEmployee: {
+        name: "",
+        email: "",
+        contact: "",
+        position: "",
+        address: "",
+        profilePicture: null,
+      },
+    };
+  },
+  methods: {
+    onFileChange(event) {
+      this.newEmployee.profilePicture = event.target.files[0];
     },
-    methods: {
-        generateRandomId() {
-            return Math.floor(1000 + Math.random() * 9000);
-        },
 
-        onFileChange(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const validTypes = ["image/jpeg", "image/png", "image/gif"];
-                const maxSize = 5 * 1024 * 1024;
+    addEmployee() {
+      const formData = new FormData();
+      formData.append("employee_name", this.newEmployee.name);
+      formData.append("email", this.newEmployee.email);
+      formData.append("phone", this.newEmployee.contact);
+      formData.append("position", this.newEmployee.position);
+      formData.append("address", this.newEmployee.address);
 
-                if (!validTypes.includes(file.type)) {
-                    alert("Please upload a valid image (JPEG, PNG, or GIF).");
-                    return;
-                }
+      if (this.newEmployee.profilePicture) {
+        formData.append("profile_picture", this.newEmployee.profilePicture);
+      }
 
-                if (file.size > maxSize) {
-                    alert("File size exceeds 5MB limit.");
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.newEmployee.profilePicture = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        },
-
-        addEmployee() {
-            this.newEmployee.id = this.generateRandomId();
-            this.$emit("add-employee", { ...this.newEmployee });
-
-            this.newEmployee = {
-                id: null,
-                name: "",
-                email: "",
-                contact: "",
-                position: "",
-                address: "",
-                profilePicture: null,
-            };
-        },
+      router.post("/employee", formData); // assuming POST /employees is your resource route
     },
+  },
 };
 </script>
+

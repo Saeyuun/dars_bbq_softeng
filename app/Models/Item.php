@@ -10,7 +10,7 @@ class Item extends Model
 
     protected $primaryKey = 'item_id';
 
-    protected $fillable = ['item_name', 'description', 'unit' , 'quantity', 'status'];
+    protected $fillable = ['item_name', 'description', 'unit'];
 
     public function inventory() {
         return $this->hasMany(Inventory::class, 'item_id', 'item_id');

@@ -12,11 +12,26 @@
     <div class="mb-4">
       <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
       <input
-        type="text"
-        id="status"
-        v-model="form.status"
-        class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
+      type="text"
+      id="status"
+      v-model="form.status"
+      class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
       />
+    </div>
+    <div class="mb-4">
+      <label for="measurement" class="block text-sm font-medium text-gray-700">Measurement</label>
+      <select
+      id="measurement"
+      v-model="form.measurement"
+      class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
+      >
+      <option value="kilogram">Kilogram</option>
+      <option value="gram">Gram</option>
+      <option value="liter">Liter</option>
+      <option value="milliliter">Milliliter</option>
+      <option value="pound">Pound</option>
+      <option value="ounce">Ounce</option>
+      </select>
     </div>
     <div class="mb-4">
       <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
@@ -52,6 +67,7 @@ export default {
       form: {
         name: "",
         status: "",
+        measurement: "",
         quantity: 0,
         description: "",
       },

@@ -10,7 +10,7 @@ class PageController extends Controller
 {
     public function maindashboard()
     {
-        return Inertia::render('OwnerDashboard');
+        return Inertia::render('MainDashboard');
     }
 
     public function employees()

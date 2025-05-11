@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('item_name');
             $table->string('description')->nullable();
             $table->string('unit');
-            $table->integer('quantity')->default(0);
-            $table->string('status')->default('available'); // available, out_of_stock
             $table->timestamps();
         });
     }
