@@ -13,13 +13,13 @@
                 >
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Search employee by name..."
                         class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                         v-model="searchQuery"
                     />
                     <button
                         class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
-                        @click="toggleAttendance"
+                        @click="showAttendanceTable = true"
                     >
                         Search Employee
                     </button>
@@ -33,7 +33,11 @@
                 </button>
             </div>
 
-            <div class="overflow-x-auto bg-white shadow rounded mb-4">
+            <!-- Table for Employee Details -->
+            <div
+                v-if="!showAttendanceTable"
+                class="overflow-x-auto bg-white shadow rounded mb-4"
+            >
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
@@ -48,61 +52,133 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template
-                            v-for="employee in filteredEmployees"
-                            :key="employee.id"
-                        >
-                            <tr
-                                class="bg-white border-b border-gray-200 hover:bg-gray-50"
+                        <template v-if="filteredEmployees.length > 0">
+                            <template
+                                v-for="employee in filteredEmployees"
+                                :key="employee.id"
                             >
-                                <td class="px-6 py-4 font-medium text-gray-900">
-                                    {{ employee.id }}
-                                </td>
-                                <td class="px-6 py-4 font-medium text-gray-900">
-                                    <div class="flex items-center space-x-3">
-                                        <button
-                                            @click="
-                                                showProfileImage(
-                                                    employee.avatar
-                                                )
-                                            "
+                                <tr
+                                    class="bg-white border-b border-gray-200 hover:bg-gray-50"
+                                >
+                                    <td
+                                        class="px-6 py-4 font-medium text-gray-900"
+                                    >
+                                        {{ employee.id }}
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 font-medium text-gray-900"
+                                    >
+                                        <div
+                                            class="flex items-center space-x-3"
                                         >
-                                            <img
-                                                :src="employee.avatar"
-                                                alt="Avatar"
-                                                class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]"
-                                            />
+                                            <button
+                                                @click="
+                                                    showProfileImage(
+                                                        employee.avatar
+                                                    )
+                                                "
+                                            >
+                                                <img
+                                                    :src="employee.avatar"
+                                                    alt="Avatar"
+                                                    class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]"
+                                                />
+                                            </button>
+                                            <span>{{ employee.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ employee.email }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ employee.contact }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ employee.position }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ employee.address }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ employee.hireDate }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-500 hover:text-[#E64444]"
+                                            @click="openEditModal(employee)"
+                                        >
+                                            Edit
                                         </button>
-                                        <span>{{ employee.name }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">{{ employee.email }}</td>
-                                <td class="px-6 py-4">
-                                    {{ employee.contact }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ employee.position }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ employee.address }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ employee.hireDate }}
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button
-                                        class="text-gray-500 hover:text-[#E64444]"
-                                        @click="openEditModal(employee)"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        class="ml-4 text-gray-500 hover:text-red-600"
-                                        @click="openDeleteModal(employee)"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
+                                        <button
+                                            class="ml-4 text-gray-500 hover:text-red-600"
+                                            @click="openDeleteModal(employee)"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
+                        <tr v-else>
+                            <td
+                                colspan="8"
+                                class="text-center py-6 text-gray-500"
+                            >
+                                No records of employees.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Attendance Table -->
+            <div v-else class="overflow-x-auto bg-white shadow rounded mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg font-bold text-gray-800">
+                        <template v-if="filteredEmployees.length === 1">
+                            Details of
+                            <span class="text-[#E64444] font-bold">{{
+                                filteredEmployees[0].name
+                            }}</span>
+                        </template>
+                        <template v-else> Employee Details </template>
+                    </h2>
+                    <button
+                        class="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300"
+                        @click="showAttendanceTable = false"
+                    >
+                        Back
+                    </button>
+                </div>
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-600">
+                        <tr>
+                            <th class="px-6 py-3">Remarks</th>
+                            <th class="px-6 py-3">Date</th>
+                            <th class="px-6 py-3">Timed In</th>
+                            <th class="px-6 py-3">Timed Out</th>
+                            <th class="px-6 py-3">Overtime</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="filteredEmployees.length === 0">
+                            <td
+                                colspan="5"
+                                class="text-center py-6 text-gray-500"
+                            >
+                                No employees found matching your search.
+                            </td>
+                        </tr>
+                        <template v-else>
+                            <tr
+                                v-for="employee in filteredEmployees"
+                                :key="employee.id"
+                            >
+                                <td class="px-6 py-4">-</td>
+                                <td class="px-6 py-4">-</td>
+                                <td class="px-6 py-4">-</td>
+                                <td class="px-6 py-4">-</td>
+                                <td class="px-6 py-4">-</td>
                             </tr>
                         </template>
                     </tbody>
@@ -168,8 +244,8 @@
             </div>
         </div>
     </div>
-    <!-- Modals -->
 
+    <!-- Modals -->
     <div
         v-if="showAddEmployeeModal"
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
@@ -289,7 +365,6 @@
         @click.self="showProfileImageModal = false"
     >
         <div class="relative bg-white rounded-lg shadow-lg p-4 max-w-md w-full">
-            <!-- Close Button -->
             <button
                 class="absolute -top-3 -right-3 bg-white rounded-full shadow-md p-1 hover:bg-gray-100"
                 @click="showProfileImageModal = false"
@@ -367,7 +442,7 @@ export default {
             showEditEmployeeModal: false,
             showDeleteEmployeeModal: false,
             showDeleteSuccess: false,
-            showAttendanceModal: false,
+            showAttendanceTable: false,
             selectedEmployee: null,
             showProfileImageModal: false,
             selectedProfileImage: null,
