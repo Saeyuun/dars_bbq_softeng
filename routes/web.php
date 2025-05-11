@@ -5,7 +5,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Inertia\Inertia;
 
 // Route::get('/', function () {
@@ -23,23 +22,18 @@ Route::get('/', function () {
     return Inertia::render('Homepage');
 });
 
-// Route::resource('/');
-
-Route::resource('/employee', EmployeeController::class);
+Route::inertia('/login', 'Login');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/maindashboard', [PageController::class, 'maindashboard'])->name('maindashboard');;
-    Route::get('/employees', [PageController::class, 'employees']);
-    Route::get('/inventory', [PageController::class, 'inventory']);
-    Route::get('/attendance', [PageController::class, 'attendance']);
-    Route::get('/history', [PageController::class, 'history']);
+    Route::get('/dashboard', [PageController::class, 'maindashboard'])->name('dashboard');
+    Route::get('/employees', [PageController::class, 'employees'])->name('employees');
+    Route::get('/inventory', [PageController::class, 'inventory'])->name('inventory');
+    Route::get('/attendance', [PageController::class, 'attendance'])->name('attendance');
+    Route::get('/history', [PageController::class, 'history'])->name('history');
 });
 
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
 
 require __DIR__ . '/auth.php';
