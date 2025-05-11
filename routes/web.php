@@ -22,17 +22,23 @@ Route::get('/', function () {
     return Inertia::render('Homepage');
 });
 
-Route::inertia('/login', 'Login');
-
+// Employee routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [PageController::class, 'maindashboard'])->name('dashboard');
-    Route::get('/employees', [PageController::class, 'employees'])->name('employees');
     Route::get('/inventory', [PageController::class, 'inventory'])->name('inventory');
     Route::get('/attendance', [PageController::class, 'attendance'])->name('attendance');
     Route::get('/history', [PageController::class, 'history'])->name('history');
+    
+    // Employee page route
+    Route::get('/employees', [PageController::class, 'employees'])->name('employees');
+    
+    // Employee management routes
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::match(['put', 'patch'], '/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 });
 
 

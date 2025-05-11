@@ -44,7 +44,7 @@
 
         <!-- Position -->
         <div class="mb-4">
-            <label for="role" class="block text-sm font-medium text-gray-700"
+            <label for="position" class="block text-sm font-medium text-gray-700"
                 >Position</label
             >
             <input
@@ -58,7 +58,7 @@
 
         <!-- Address -->
         <div class="mb-4">
-            <label for="role" class="block text-sm font-medium text-gray-700"
+            <label for="address" class="block text-sm font-medium text-gray-700"
                 >Address</label
             >
             <input
@@ -73,20 +73,17 @@
         <!-- Profile Picture -->
         <div class="mb-4">
             <label
-                for="profilePicture"
+                for="profile_picture"
                 class="block text-sm font-medium text-gray-700"
-                >Profile Picture</label
+                >Profile Picture (Optional)</label
             >
             <input
                 type="file"
-                id="profilePicture"
+                id="profile_picture"
                 @change="onFileChange"
+                accept="image/*"
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
-                placeholder="Upload a profile picture"
             />
-            <p class="text-sm text-gray-500 mt-1">
-                Optional: Upload a profile picture for the employee.
-            </p>
         </div>
 
         <!-- Add Employee Button -->
@@ -112,13 +109,13 @@ export default {
                 contact: "",
                 position: "",
                 address: "",
-                profilePicture: null,
+                profile_picture: null,
             },
         };
     },
     methods: {
         onFileChange(event) {
-            this.newEmployee.profilePicture = event.target.files[0];
+            this.newEmployee.profile_picture = event.target.files[0];
         },
 
         addEmployee() {
@@ -129,14 +126,27 @@ export default {
             formData.append("position", this.newEmployee.position);
             formData.append("address", this.newEmployee.address);
 
-            if (this.newEmployee.profilePicture) {
-                formData.append(
-                    "profile_picture",
-                    this.newEmployee.profilePicture
-                );
+            if (this.newEmployee.profile_picture) {
+                formData.append("profile_picture", this.newEmployee.profile_picture);
             }
 
-            router.post("/employee", formData); // assuming POST /employees is your resource route
+            router.post("/employees", formData, {
+                onSuccess: () => {
+                    this.$emit('close');
+                    this.resetForm();
+                },
+            });
+        },
+
+        resetForm() {
+            this.newEmployee = {
+                name: "",
+                email: "",
+                contact: "",
+                position: "",
+                address: "",
+                profile_picture: null,
+            };
         },
     },
 };

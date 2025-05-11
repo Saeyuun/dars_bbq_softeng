@@ -15,7 +15,10 @@ class PageController extends Controller
 
     public function employees()
     {
-        return Inertia::render('Employees');
+        $employees = \App\Models\Employee::all();
+        return Inertia::render('Employees', [
+            'employees' => $employees
+        ]);
     }
 
     public function inventory()

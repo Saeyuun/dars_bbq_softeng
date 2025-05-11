@@ -11,6 +11,7 @@ use App\Models\Employee;
 use Illuminate\Support\Facades\Validator;
 use function Propaganistas\LaravelPhone\phone;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 
 class EmployeeController extends Controller
@@ -18,110 +19,128 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::all(); // or your query to get employees
+
         return Inertia::render('Employees', [
-        'employees' => $employees
-]);
+            'employees' => $employees  // Changed from 'employeeData' to 'employees'
+        ]);
     }
 
-public function store(Request $request)
-{
-    $validate = Validator::make($request->all(), [
-        'employee_name'    => 'required',
-        'email'            => 'required|email|unique:users,email',
-        'phone'            => 'required|phone:PH',
-        'address'          => 'required',
-        'position'         => 'required',
-        'profile_picture'  => 'nullable|image',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'employee_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:employee,email',
+            'phone' => 'required|string|max:20',
+            'position' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-    if ($validate->fails()) {
-        return response()->json([
-            'message' => 'Validation failed',
-            'errors'  => $validate->errors()
-        ], 422);
+        $data = $request->all();
+
+        if ($request->hasFile('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile-pictures', 'public');
+            $data['profile_picture'] = $path;
+        }
+
+        // Create the employee first
+        $employee = Employee::create([
+            'employee_name' => $data['employee_name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
+            'position' => $data['position'],
+            'profile_picture' => $data['profile_picture'] ?? null,
+        ]);
+
+        // Generate default password
+        $rawPassword = 'darsbbq123';
+
+        // Create the user using employee_id
+        $user = User::create([
+            'employee_id' => $employee->employee_id,
+            'name' => $data['employee_name'],
+            'email' => $data['email'],
+            'password' => Hash::make($rawPassword),
+            'permission' => 'employee',
+        ]);
+
+        return redirect()->back()->with('success', 'Employee and User created successfully');
     }
-
-    $validatedData = $validate->validated();
-
-    // Handle profile picture upload if exists
-    if ($request->hasFile('profile_picture')) {
-        $validatedData['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
-    }
-
-    // Create the employee first
-    $employee = Employee::create([
-        'employee_name'   => $validatedData['employee_name'],
-        'email'           => $validatedData['email'],
-        'phone'           => $validatedData['phone'],
-        'address'         => $validatedData['address'],
-        'position'        => $validatedData['position'],
-        'profile_picture' => $validatedData['profile_picture'] ?? null,
-    ]);
-
-    // Generate random password
-    $rawPassword = 'darsbbq123'; // or Str::random(10) if you want random
-
-    // Now create the user using employee_id
-    $user = User::create([
-        'employee_id' => $employee->employee_id,
-        'name'        => $validatedData['employee_name'],
-        'email'       => $validatedData['email'],
-        'password'    => Hash::make($rawPassword),
-        'permission'  => 'employee',
-    ]);
-
-    return response()->json([
-        'message' => 'Employee and User created successfully',
-        'data'    => new EmployeeResource($employee),
-        'login_credentials' => [
-            'email'    => $user->email,
-            'password' => $rawPassword // ← return the raw password
-        ]
-    ], 201);
-}
 
     public function show(Employee $employee)
     {
         return new EmployeeResource($employee);
     }
 
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
-        $validate = Validator::make($request->all(), [
-            'employee_name' => 'required',
-            'email'         => 'required|email',
-            'phone'         => 'required|phone:PH',
-            'address'       => 'required',
-            'position'      => 'required',
-            'hire_date'     => 'required|date',
+        \Log::info('Update request received', [
+            'id' => $id,
+            'data' => $request->all()
         ]);
 
-        if ($validate->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validate->errors()
-            ], 422); // Use 422 Unprocessable Entity for validation errors
+        $request->validate([
+            'employee_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'position' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $employee = Employee::findOrFail($id);
+        \Log::info('Employee found', ['employee' => $employee->toArray()]);
+
+        // Handle profile picture upload if provided
+        if ($request->hasFile('profile_picture')) {
+            // Delete old profile picture if exists
+            if ($employee->profile_picture) {
+                Storage::disk('public')->delete($employee->profile_picture);
+            }
+
+            // Store new profile picture
+            $path = $request->file('profile_picture')->store('profile-pictures', 'public');
+            $employee->profile_picture = $path;
         }
 
-                // Normalize phone number to E.164 format (e.g., +63917...)
-            $validatedData = $validate->validated();
-            $validatedData['phone'] = phone($validatedData['phone'], 'PH')->formatE164();
+        // Update other fields
+        $employee->employee_name = $request->employee_name;
+        $employee->email = $request->email;
+        $employee->phone = $request->phone;
+        $employee->position = $request->position;
+        $employee->address = $request->address;
 
-        $employee = Employee::update($validate->validated());
+        $employee->save();
+        \Log::info('Employee updated', ['employee' => $employee->toArray()]);
 
-        return response()->json([
-            'message' => 'Product updated successfully',
-            'data' => new EmployeeResource($employee)
-        ]);
+        // Update the associated user's name and email
+        $user = User::where('employee_id', $employee->employee_id)->first();
+        if ($user) {
+            $user->update([
+                'name' => $request->employee_name,
+                'email' => $request->email
+            ]);
+            \Log::info('User updated', ['user' => $user->toArray()]);
+        }
+
+        return redirect()->back()->with('success', 'Employee updated successfully');
     }
 
 
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
+        $employee = \App\Models\Employee::findOrFail($id);
+        
+        // Delete the profile picture if it exists
+        if ($employee->profile_picture) {
+            Storage::delete($employee->profile_picture);
+        }
+        
+        // Delete the employee record
         $employee->delete();
-        return response()->json([
-            'message' => 'Employee data successfully deleted'
-        ]);
+        
+        return redirect()->back();
     }
 }

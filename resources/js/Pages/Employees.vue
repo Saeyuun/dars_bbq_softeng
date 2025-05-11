@@ -1,43 +1,32 @@
 <template>
+
     <Head title="Employee Management" />
     <div class="flex flex-col sm:flex-row min-h-screen">
         <div class="hidden sm:block">
             <Sidebar />
         </div>
         <div class="flex-1 p-4 sm:ml-[250px]">
-            <div
-                class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4"
-            >
-                <div
-                    class="flex flex-col sm:flex-row sm:items-center gap-2 w-full"
-                >
-                    <input
-                        type="text"
-                        placeholder="Search employee by name..."
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
+                    <input type="text" placeholder="Search employee by name..."
                         class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
-                        v-model="searchQuery"
-                    />
+                        v-model="searchQuery" />
                     <button
                         class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
-                        @click="handleSearch"
-                    >
+                        @click="handleSearch">
                         Search Employee
                     </button>
                 </div>
 
                 <button
                     class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 w-full sm:w-auto"
-                    @click="showAddEmployeeModal = true"
-                >
+                    @click="showAddEmployeeModal = true">
                     Add Employee Record
                 </button>
             </div>
 
             <!-- Table for Employee Details -->
-            <div
-                v-if="!showAttendanceTable"
-                class="overflow-x-auto bg-white shadow rounded mb-4"
-            >
+            <div v-if="!showAttendanceTable" class="overflow-x-auto bg-white shadow rounded mb-4">
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
@@ -52,46 +41,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="filteredEmployees.length > 0">
-                            <template
-                                v-for="employee in filteredEmployees"
-                                :key="employee.id"
-                            >
-                                <tr
-                                    class="bg-white border-b border-gray-200 hover:bg-gray-50"
-                                >
-                                    <td
-                                        class="px-6 py-4 font-medium text-gray-900"
-                                    >
-                                        {{ employee.id }}
+                        <template v-if="employees && employees.length > 0">
+                            <template v-for="employee in employees" :key="employee.employee_id">
+                                <tr class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900">
+                                        {{ employee.employee_id }}
                                     </td>
-                                    <td
-                                        class="px-6 py-4 font-medium text-gray-900"
-                                    >
-                                        <div
-                                            class="flex items-center space-x-3"
-                                        >
-                                            <button
-                                                @click="
-                                                    showProfileImage(
-                                                        employee.avatar
-                                                    )
-                                                "
-                                            >
-                                                <img
-                                                    :src="employee.avatar"
-                                                    alt="Avatar"
-                                                    class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]"
-                                                />
+                                    <td class="px-6 py-4 font-medium text-gray-900">
+                                        <div class="flex items-center space-x-3">
+                                            <button @click="showProfileImage(employee.avatar_url)">
+                                                <img :src="employee.avatar_url" alt="Avatar"
+                                                    class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]" />
                                             </button>
-                                            <span>{{ employee.name }}</span>
+                                            <span>{{ employee.employee_name }}</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ employee.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ employee.contact }}
+                                        {{ employee.phone }}
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ employee.position }}
@@ -103,16 +72,12 @@
                                         {{ employee.hireDate }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <button
-                                            class="text-gray-500 hover:text-[#E64444]"
-                                            @click="openEditModal(employee)"
-                                        >
+                                        <button class="text-gray-500 hover:text-[#E64444]"
+                                            @click="openEditModal(employee)">
                                             Edit
                                         </button>
-                                        <button
-                                            class="ml-4 text-gray-500 hover:text-red-600"
-                                            @click="openDeleteModal(employee)"
-                                        >
+                                        <button class="ml-4 text-gray-500 hover:text-red-600"
+                                            @click="openDeleteModal(employee)">
                                             Delete
                                         </button>
                                     </td>
@@ -120,10 +85,7 @@
                             </template>
                         </template>
                         <tr v-else>
-                            <td
-                                colspan="8"
-                                class="text-center py-6 text-gray-500"
-                            >
+                            <td colspan="8" class="text-center py-6 text-gray-500">
                                 No records of employees.
                             </td>
                         </tr>
@@ -131,28 +93,18 @@
                 </table>
             </div>
 
-            <AttendanceTable
-                :show="showAttendanceTable"
-                :employees="filteredEmployees"
-                @close="showAttendanceTable = false"
-            />
+            <AttendanceTable :show="showAttendanceTable" :employees="filteredEmployees"
+                @close="showAttendanceTable = false" />
 
             <div class="sm:hidden space-y-4">
-                <div
-                    v-for="employee in filteredEmployees"
-                    :key="employee.id"
-                    class="bg-white rounded shadow p-4"
-                >
+                <div v-for="employee in filteredEmployees" :key="employee.employee_id" class="bg-white rounded shadow p-4">
                     <div class="flex items-center space-x-3 mb-2">
-                        <button @click="showProfileImage(employee.avatar)">
-                            <img
-                                :src="employee.avatar"
-                                alt="Avatar"
-                                class="w-10 h-10 rounded-full hover:ring-2 hover:ring-[#E64444]"
-                            />
+                        <button @click="showProfileImage(employee.avatar_url)">
+                            <img :src="employee.avatar_url" alt="Avatar"
+                                class="w-10 h-10 rounded-full hover:ring-2 hover:ring-[#E64444]" />
                         </button>
                         <div class="font-bold text-[#E64444] text-lg">
-                            {{ employee.name }}
+                            {{ employee.employee_name }}
                         </div>
                     </div>
                     <div class="text-sm mb-1">
@@ -165,7 +117,7 @@
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Contact:</span>
-                        {{ employee.phne }}
+                        {{ employee.phone || employee.contact || employee.phne }}
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Position:</span>
@@ -177,19 +129,13 @@
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Hire Date:</span>
-                        {{ employee.created_at }}
+                        {{ employee.hireDate || employee.created_at }}
                     </div>
                     <div class="flex justify-end space-x-2 mt-2">
-                        <button
-                            class="text-gray-500 hover:text-[#E64444]"
-                            @click="openEditModal(employee)"
-                        >
+                        <button class="text-gray-500 hover:text-[#E64444]" @click="openEditModal(employee)">
                             Edit
                         </button>
-                        <button
-                            class="text-gray-500 hover:text-red-600"
-                            @click="openDeleteModal(employee)"
-                        >
+                        <button class="text-gray-500 hover:text-red-600" @click="openDeleteModal(employee)">
                             Delete
                         </button>
                     </div>
@@ -199,15 +145,11 @@
     </div>
 
     <!-- Modals -->
-    <div
-        v-if="showAddEmployeeModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showAddEmployeeModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showAddEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showAddEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
@@ -217,67 +159,43 @@
         </div>
     </div>
 
-    <div
-        v-if="showEditEmployeeModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showEditEmployeeModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showEditEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showEditEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
                 Edit Employee
             </h2>
-            <EditEmployeeRecord :employee="selectedEmployee" />
+            <EditEmployeeRecord :employee="selectedEmployee" @close="showEditEmployeeModal = false" />
         </div>
     </div>
 
-    <div
-        v-if="showDeleteEmployeeModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showDeleteEmployeeModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showDeleteEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showDeleteEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
                 Delete Employee
             </h2>
-            <DeleteEmployee
-                :show="showDeleteEmployeeModal"
-                :employee="selectedEmployee"
-                @close="showDeleteEmployeeModal = false"
-            />
+            <DeleteEmployee :show="showDeleteEmployeeModal" :employee="selectedEmployee"
+                @close="showDeleteEmployeeModal = false" />
         </div>
     </div>
 
-    <div
-        v-if="showDeleteSuccess"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
-        >
+    <div v-if="showDeleteSuccess"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
             <div class="flex flex-col items-center">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-16 text-red-500 mb-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500 mb-4" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h2 class="text-lg font-bold text-gray-800">
                     Employee Deleted
@@ -287,17 +205,11 @@
     </div>
 
     <!-- Search Result Modal -->
-    <div
-        v-if="showAttendanceModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative"
-        >
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showAttendanceModal = false"
-            >
+    <div v-if="showAttendanceModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative">
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showAttendanceModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
@@ -308,49 +220,24 @@
     </div>
 
     <!-- Clickable Image -->
-    <div
-        v-if="showProfileImageModal"
-        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
-        @click.self="showProfileImageModal = false"
-    >
+    <div v-if="showProfileImageModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+        @click.self="showProfileImageModal = false">
         <div class="relative bg-white rounded-lg shadow-lg p-4 max-w-md w-full">
-            <button
-                class="absolute -top-3 -right-3 bg-white rounded-full shadow-md p-1 hover:bg-gray-100"
-                @click="showProfileImageModal = false"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-gray-700"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M6 18L18 6M6 6l12 12"
-                    />
+            <button class="absolute -top-3 -right-3 bg-white rounded-full shadow-md p-1 hover:bg-gray-100"
+                @click="showProfileImageModal = false">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
-            <img
-                :src="selectedProfileImage"
-                alt="Profile"
-                class="w-full h-auto rounded-md"
-            />
+            <img :src="selectedProfileImage" alt="Profile" class="w-full h-auto rounded-md" />
         </div>
     </div>
 
-    <AdminPermission
-        :show="showAdminPermission"
-        @close="showAdminPermission = false"
-    />
+    <AdminPermission :show="showAdminPermission" @close="showAdminPermission = false" />
     <SearchAlert :show="showSearchAlert" @close="showSearchAlert = false" />
-    <EmployeeAdded
-        :show="showEmployeeAdded"
-        @close="showEmployeeAdded = false"
-    />
+    <EmployeeAdded :show="showEmployeeAdded" @close="showEmployeeAdded = false" />
 </template>
 
 <script>
@@ -364,10 +251,16 @@ import SearchAlert from "../Components/authComponents/SearchAlert.vue";
 import AttendanceTable from "../Components/TablesandCharts/attendance-table.vue";
 import EmployeeAdded from "../Components/authComponents/Employee-added.vue";
 import { Head } from "@inertiajs/vue3";
+
 export default {
+
     name: "employees",
     props: {
-        employees: Array,
+        employees: {
+            type: Array,
+            required: false,
+            default: () => []
+        },
     },
 
     components: {
@@ -382,6 +275,7 @@ export default {
         EmployeeAdded,
         Head,
     },
+
     data() {
         return {
             searchQuery: "",
@@ -390,34 +284,26 @@ export default {
             showDeleteEmployeeModal: false,
             showDeleteSuccess: false,
             showAttendanceTable: false,
+            showAttendanceModal: false,
             selectedEmployee: null,
             showProfileImageModal: false,
             selectedProfileImage: null,
             showAdminPermission: true,
             showSearchAlert: false,
             showEmployeeAdded: false,
-
-            employees: [
-                // {
-                //     id: "",
-                //     name: "",
-                //     email: "",
-                //     position: "",
-                //     contact: "",
-                //     address: "",
-                //     hireDate: "",
-                //     avatar: "",
-                // },
-            ],
         };
     },
+
+    mounted() {
+        console.log('Props received:', this.$props);
+        console.log('Employees data:', this.employees);
+    },
+
     computed: {
         filteredEmployees() {
-            return this.employees.filter((employee) =>
-                employee.name
-                    .toLowerCase()
-                    .includes(this.searchQuery.toLowerCase())
-            );
+            return this.employees ? this.employees.filter((employee) =>
+                (employee.employee_name || '').toLowerCase().includes(this.searchQuery.toLowerCase())
+            ) : [];
         },
     },
     methods: {
@@ -432,7 +318,7 @@ export default {
                 return;
             }
 
-            this.showAttendanceTable = true;
+            this.showAttendanceModal = true;
         },
         toggleAttendance() {
             this.showAttendanceModal = true;
@@ -446,6 +332,7 @@ export default {
             this.showDeleteEmployeeModal = true;
         },
         showProfileImage(imageUrl) {
+            if (!imageUrl) return;
             this.selectedProfileImage = imageUrl;
             this.showProfileImageModal = true;
         },
