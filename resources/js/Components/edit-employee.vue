@@ -28,6 +28,7 @@
                 type="email"
                 id="email"
                 v-model="newEmployee.email"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -41,6 +42,7 @@
                 type="text"
                 id="contact"
                 v-model="newEmployee.contact"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -56,6 +58,7 @@
                 type="text"
                 id="position"
                 v-model="newEmployee.position"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -69,6 +72,7 @@
                 type="text"
                 id="address"
                 v-model="newEmployee.address"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
