@@ -1,13 +1,15 @@
 <template>
-    <div class="w-full pb-6">
-      <h1 class="text-[#732222] font-inter text-[33px] font-medium leading-[42.9px] mb-4 ml-0">
-        Progress Tracker
-      </h1>
+    <div class="w-full">
+        <h1
+            class="text-[#7B2E2E] font-bold text-2xl sm:text-3xl leading-tight mb-0 font-sans text-left"
+        >
+            Progress Tracker
+        </h1>
     </div>
-  </template>
-  
-  <script>
-  export default {
+</template>
+
+<script>
+export default {
     name: "ProgressTrackerHeader",
-  };
-  </script>
+};
+</script>
