@@ -9,6 +9,7 @@
                 type="text"
                 id="name"
                 v-model="newEmployee.name"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -22,6 +23,7 @@
                 type="email"
                 id="email"
                 v-model="newEmployee.email"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -35,6 +37,7 @@
                 type="text"
                 id="contact"
                 v-model="newEmployee.contact"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -48,6 +51,7 @@
                 type="text"
                 id="position"
                 v-model="newEmployee.position"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -61,6 +65,7 @@
                 type="text"
                 id="address"
                 v-model="newEmployee.address"
+                required
                 class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E64444]"
             />
         </div>
@@ -98,39 +103,41 @@
 import { router } from "@inertiajs/vue3";
 
 export default {
-  name: "AddEmployeeRecord",
-  data() {
-    return {
-      newEmployee: {
-        name: "",
-        email: "",
-        contact: "",
-        position: "",
-        address: "",
-        profilePicture: null,
-      },
-    };
-  },
-  methods: {
-    onFileChange(event) {
-      this.newEmployee.profilePicture = event.target.files[0];
+    name: "AddEmployeeRecord",
+    data() {
+        return {
+            newEmployee: {
+                name: "",
+                email: "",
+                contact: "",
+                position: "",
+                address: "",
+                profilePicture: null,
+            },
+        };
     },
+    methods: {
+        onFileChange(event) {
+            this.newEmployee.profilePicture = event.target.files[0];
+        },
 
-    addEmployee() {
-      const formData = new FormData();
-      formData.append("employee_name", this.newEmployee.name);
-      formData.append("email", this.newEmployee.email);
-      formData.append("phone", this.newEmployee.contact);
-      formData.append("position", this.newEmployee.position);
-      formData.append("address", this.newEmployee.address);
+        addEmployee() {
+            const formData = new FormData();
+            formData.append("employee_name", this.newEmployee.name);
+            formData.append("email", this.newEmployee.email);
+            formData.append("phone", this.newEmployee.contact);
+            formData.append("position", this.newEmployee.position);
+            formData.append("address", this.newEmployee.address);
 
-      if (this.newEmployee.profilePicture) {
-        formData.append("profile_picture", this.newEmployee.profilePicture);
-      }
+            if (this.newEmployee.profilePicture) {
+                formData.append(
+                    "profile_picture",
+                    this.newEmployee.profilePicture
+                );
+            }
 
-      router.post("/employee", formData); // assuming POST /employees is your resource route
+            router.post("/employee", formData); // assuming POST /employees is your resource route
+        },
     },
-  },
 };
 </script>
-
