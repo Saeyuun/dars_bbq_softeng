@@ -13,11 +13,16 @@ class AttendanceController extends Controller
     public function checkIn(Request $request)
     {
         $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return back()->with('error', 'Employee record not found.');
+        }
 
         // Ensure no open attendance
-        $existing = Employee_Attendance::where('login_id', $user->id)
+        $existing = Employee_Attendance::where('employee_id', $employee->employee_id)
             ->whereNull('time_out')
-            ->latest()
+            ->latest('time_in')
             ->first();
 
         if ($existing) {
@@ -25,7 +30,7 @@ class AttendanceController extends Controller
         }
 
         Employee_Attendance::create([
-            'login_id' => $user->id,
+            'employee_id' => $employee->employee_id,
             'time_in' => now(),
         ]);
 
@@ -39,10 +44,15 @@ class AttendanceController extends Controller
         ]);
 
         $user = Auth::user();
+        $employee = $user->employee;
 
-        $attendance = Employee_Attendance::where('login_id', $user->id)
+        if (!$employee) {
+            return back()->with('error', 'Employee record not found.');
+        }
+
+        $attendance = Employee_Attendance::where('employee_id', $employee->employee_id)
             ->whereNull('time_out')
-            ->latest()
+            ->latest('time_in')
             ->first();
 
         if (!$attendance) {

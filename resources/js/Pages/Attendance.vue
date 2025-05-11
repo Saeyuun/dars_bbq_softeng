@@ -1,198 +1,150 @@
 <template>
     <Head title="Attendance" />
-    <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
-        <div class="hidden sm:block w-64">
+    <div class="flex flex-col sm:flex-row min-h-screen">
+        <div class="hidden sm:block">
             <Sidebar />
         </div>
+        <div class="flex-1 p-4 sm:ml-[250px]">
+            <div class="mb-4">
+                <h1 class="text-2xl font-bold text-[#E64444]">
+                    {{ showEmployeeAttendance ? `${employee.employee_name}'s Attendance` : 'Attendance' }}
+                </h1>
+            </div>
 
-        <!-- Main Content -->
-        <div class="flex-1 p-4 sm:p-6">
-            <div
-                class="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:gap-6 mb-6 items-start"
-            >
-                <!-- Check In/Out Card -->
-                <div
-                    class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full sm:max-w-sm"
-                >
-                    <h2 class="text-lg font-bold text-[#E64444] mb-4">
-                        {{
-                            !isTimedIn
-                                ? "Check In"
-                                : !isTimedOut
-                                ? "Check Out"
-                                : "Attendance Complete"
-                        }}
-                    </h2>
-                    <p class="text-sm text-gray-500">{{ currentDate }}</p>
-                    <p class="text-2xl font-semibold text-gray-800 mt-2">
-                        {{ currentTime }}
-                    </p>
-
-                    <template v-if="!isTimedIn">
-                        <button
-                            class="mt-10 w-full bg-[#5BD069] text-white text-base font-normal py-2 rounded hover:bg-green-700"
-                            @click="confirmCheckIn"
-                        >
-                            Check In
+            <div v-if="showEmployeeAttendance" class="mb-8 bg-white p-6 rounded-lg shadow-lg">
+                <div class="flex flex-col md:flex-row gap-6 items-center justify-between">
+                    <form @submit.prevent="checkIn" class="w-full md:w-auto">
+                        <button type="submit" 
+                            class="w-full bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-md">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Check In
                         </button>
-                    </template>
-
-                    <!-- Check Out Section -->
-                    <template v-else-if="!isTimedOut">
-                        <textarea
-                            v-model="checkOutRemarks"
-                            placeholder="Enter remarks...."
-                            class="mt-4 w-full p-2 border rounded text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#E64444]"
-                            rows="3"
-                        ></textarea>
-                        <button
-                            class="mt-4 w-full bg-[#5BD069] text-white text-base font-normal py-2 rounded hover:bg-red-700"
-                            @click="confirmCheckOut"
-                        >
-                            Check Out
+                    </form>
+                    <form @submit.prevent="checkOut" class="w-full md:w-auto flex flex-col gap-4">
+                        <div class="relative">
+                            <textarea
+                                v-model="checkOutRemark"
+                                placeholder="Add remarks for today's attendance..."
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E64444] focus:border-transparent transition-all duration-200"
+                                rows="3"
+                            ></textarea>
+                            <div class="absolute bottom-2 right-2 text-sm text-gray-500">
+                                {{ checkOutRemark.length }}/500
+                            </div>
+                        </div>
+                        <button type="submit" 
+                            class="w-full bg-[#E64444] hover:bg-red-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-md">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Check Out
                         </button>
-                    </template>
-                </div>
-
-                <!-- Schedule Card -->
-                <div
-                    class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-full sm:max-w-sm sm:justify-self-end sm:mr-8 min-h-[200px]"
-                >
-                    <h2 class="text-lg font-bold text-[#E64444] mb-4">
-                        Schedule
-                    </h2>
-                    <p class="text-sm text-gray-500">Standard Work Time:</p>
-                    <p class="text-base font-semibold text-gray-800">
-                        12:00 PM - 5:00 PM
-                    </p>
-                    <p class="text-sm text-gray-500 mt-2">Break Time:</p>
-                    <p class="text-base font-semibold text-gray-800">
-                        1-2 hour/s
-                    </p>
-                    <p class="text-sm text-gray-500 mt-2">Status:</p>
-                    <p
-                        class="text-base font-semibold text-gray-800 whitespace-nowrap"
-                    >
-                        {{
-                            isTimedIn
-                                ? isTimedOut
-                                    ? "Timed Out"
-                                    : "Timed In"
-                                : "Not Timed In"
-                        }}
-                    </p>
+                    </form>
                 </div>
             </div>
 
-            <!-- Attendance Record -->
-            <div>
-                <div
-                    class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2"
-                >
-                    <h2 class="text-lg font-bold text-[#E64444]">
-                        Attendance Record
-                    </h2>
-                    <div class="relative w-full sm:w-auto">
-                        <DateFilter v-model="selectedDate" />
-                    </div>
-                </div>
+            <div class="mb-4">
+                <DateFilter @date-change="updateSelectedDate" />
+            </div>
 
-                <div
-                    class="hidden sm:block overflow-x-auto bg-white shadow rounded-lg"
-                >
-                    <table class="min-w-full text-sm text-gray-700">
-                        <thead
-                            class="bg-gray-100 text-xs uppercase text-gray-600"
-                        >
-                            <tr>
-                                <th class="px-4 py-3 text-left">Remarks</th>
-                                <th class="px-4 py-3 text-center">Date</th>
-                                <th class="px-4 py-3 text-center">Time In</th>
-                                <th class="px-4 py-3 text-center">Time Out</th>
-                                <th class="px-4 py-3 text-center">Overtime</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(record, index) in filteredRecords"
-                                :key="index"
-                                class="border-b hover:bg-gray-50"
-                            >
-                                <td class="px-4 py-3 text-left">
-                                    {{ record.remarks }}
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th v-if="!showEmployeeAttendance" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Employee
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Time In
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Time Out
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Remarks
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <template v-if="filteredRecords.length > 0">
+                            <tr v-for="record in filteredRecords" :key="record.id" class="hover:bg-gray-50">
+                                <td v-if="!showEmployeeAttendance" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ record.employee_name }}
                                 </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ record.date }}
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    {{ record.timeIn }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ record.time_in }}
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    {{ record.timeOut }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ record.time_out || '-' }}
                                 </td>
-                                <td class="px-4 py-3 text-center">
-                                    {{ record.overtime }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span :class="{
+                                        'px-2 py-1 rounded-full text-xs font-semibold': true,
+                                        'bg-green-100 text-green-800': record.status === 'Present',
+                                        'bg-red-100 text-red-800': record.status === 'Absent',
+                                        'bg-yellow-100 text-yellow-800': record.status === 'Late'
+                                    }">
+                                        {{ record.status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <button 
+                                        @click="showRemarkDetails(record)"
+                                        class="text-[#E64444] hover:text-red-600 font-medium"
+                                    >
+                                        {{ record.remark ? 'View Remarks' : 'No Remarks' }}
+                                    </button>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        </template>
+                        <tr v-else>
+                            <td :colspan="showEmployeeAttendance ? 5 : 6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                No attendance records found
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <div class="sm:hidden space-y-4 mt-4">
-                    <div
-                        v-for="(record, index) in filteredRecords"
-                        :key="index"
-                        class="bg-white rounded shadow p-4"
-                    >
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-semibold text-[#E64444]">{{
-                                record.date
-                            }}</span>
-                            <span class="text-xs text-gray-500"
-                                >#{{ index + 1 }}</span
-                            >
+            <!-- Remark Details Modal -->
+            <div v-if="selectedRecord" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative">
+                    <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]" @click="selectedRecord = null">
+                        ✕
+                    </button>
+                    <h3 class="text-xl font-bold text-[#E64444] mb-4">Attendance Details</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">Date</p>
+                                <p class="font-medium">{{ selectedRecord.date }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Status</p>
+                                <p class="font-medium">{{ selectedRecord.status }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Time In</p>
+                                <p class="font-medium">{{ selectedRecord.time_in }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Time Out</p>
+                                <p class="font-medium">{{ selectedRecord.time_out || '-' }}</p>
+                            </div>
                         </div>
-                        <div class="text-sm mb-1">
-                            <span class="font-semibold">Remarks:</span>
-                            {{ record.remarks }}
-                        </div>
-                        <div class="text-sm mb-1">
-                            <span class="font-semibold">Time In:</span>
-                            {{ record.timeIn }}
-                        </div>
-                        <div class="text-sm mb-1">
-                            <span class="font-semibold">Time Out:</span>
-                            {{ record.timeOut }}
-                        </div>
-                        <div class="text-sm mb-1">
-                            <span class="font-semibold">Overtime:</span>
-                            {{ record.overtime }}
+                        <div>
+                            <p class="text-sm text-gray-500 mb-2">Remarks</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-700">{{ selectedRecord.remark || 'No remarks provided' }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Success Modal -->
-        <div
-            v-if="showSuccessModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-        >
-            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center">
-                <img
-                    src="@/assets/success.png"
-                    alt="Check In Success"
-                    class="mx-auto w-20 mb-4"
-                />
-                <p class="text-lg font-semibold text-gray-700">
-                    {{ isTimedOut ? "Check Out Success" : "Check In Success" }}
-                </p>
-                <button
-                    @click="showSuccessModal = false"
-                    class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                    Close
-                </button>
             </div>
         </div>
     </div>
@@ -201,7 +153,7 @@
 <script>
 import DateFilter from "@/Components/date-filter.vue";
 import Sidebar from "@/Components/side-bar.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 
 export default {
     name: "Attendance",
@@ -211,94 +163,144 @@ export default {
         Head,
     },
 
+    props: {
+        employee: {
+            type: Object,
+            default: null
+        },
+        showEmployeeAttendance: {
+            type: Boolean,
+            default: false
+        },
+        employees: {
+            type: Array,
+            default: () => []
+        }
+    },
+
     computed: {
         filteredRecords() {
-            if (!this.selectedDate) return this.attendanceRecords;
+            if (!this.selectedDate) {
+                if (this.showEmployeeAttendance) {
+                    const records = (this.employee?.attendance || []).map(record => ({
+                        ...record,
+                        date: new Date(record.time_in).toLocaleDateString(),
+                        time_in: new Date(record.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        time_out: record.time_out ? new Date(record.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-',
+                        status: record.status || this.getStatus(record)
+                    }));
+                    console.log('Employee attendance records:', records);
+                    return records;
+                }
+                // For admin view, combine all employee attendance records
+                return this.employees.flatMap(emp => 
+                    (emp.attendance || []).map(record => ({
+                        ...record,
+                        employee_name: emp.employee_name,
+                        date: new Date(record.time_in).toLocaleDateString(),
+                        time_in: new Date(record.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        time_out: record.time_out ? new Date(record.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-',
+                        status: record.status || this.getStatus(record)
+                    }))
+                );
+            }
 
             const selected = new Date(this.selectedDate)
                 .toISOString()
                 .split("T")[0];
 
-            return this.attendanceRecords.filter(
-                (record) => record.date === selected
+            if (this.showEmployeeAttendance) {
+                return (this.employee?.attendance || [])
+                    .filter(record => new Date(record.time_in).toISOString().split('T')[0] === selected)
+                    .map(record => ({
+                        ...record,
+                        date: new Date(record.time_in).toLocaleDateString(),
+                        time_in: new Date(record.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        time_out: record.time_out ? new Date(record.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-',
+                        status: record.status || this.getStatus(record)
+                    }));
+            }
+
+            // For admin view, filter combined records
+            return this.employees.flatMap(emp => 
+                (emp.attendance || [])
+                    .filter(record => new Date(record.time_in).toISOString().split('T')[0] === selected)
+                    .map(record => ({
+                        ...record,
+                        employee_name: emp.employee_name,
+                        date: new Date(record.time_in).toLocaleDateString(),
+                        time_in: new Date(record.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        time_out: record.time_out ? new Date(record.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-',
+                        status: record.status || this.getStatus(record)
+                    }))
             );
-        },
+        }
     },
+
     data() {
         return {
-            currentDate: "",
-            currentTime: "",
-            isTimedIn: false,
-            isTimedOut: false,
-            showSuccessModal: false,
-            checkInTime: null,
-            checkOutRemarks: "",
-            intervalId: null,
-            attendanceRecords: [],
             selectedDate: "",
+            attendanceRecords: [],
+            checkOutRemark: "",
+            selectedRecord: null,
         };
     },
+
     methods: {
-        updateClock() {
-            const now = new Date();
-            this.currentDate = now.toLocaleDateString("en-US", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-            });
-            this.currentTime = now.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
+        updateSelectedDate(date) {
+            this.selectedDate = date;
+        },
+        getStatus(record) {
+            if (!record.time_out) {
+                return 'Present';
+            }
+            const timeIn = new Date(record.time_in);
+            const timeOut = new Date(record.time_out);
+            const hoursWorked = (timeOut - timeIn) / (1000 * 60 * 60);
+            
+            if (hoursWorked < 8) {
+                return 'Late';
+            }
+            return 'Present';
+        },
+        checkIn() {
+            router.post(route('attendance.check-in'), {}, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Refresh the page to show updated attendance
+                    router.reload({ only: ['employee'] });
+                }
             });
         },
-        confirmCheckIn() {
-            this.checkInTime = new Date();
-            const numericDate = this.checkInTime.toISOString().split("T")[0];
-            const formattedTime = this.checkInTime.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
+        checkOut() {
+            if (this.checkOutRemark.length > 500) {
+                alert('Remarks cannot exceed 500 characters');
+                return;
+            }
+            router.post(route('attendance.check-out'), {
+                remarks: this.checkOutRemark
+            }, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.checkOutRemark = "";
+                    router.reload({ only: ['employee'] });
+                }
             });
-
-            this.attendanceRecords.push({
-                remarks: "-",
-                date: numericDate,
-                timeIn: formattedTime,
-                timeOut: "-",
-                overtime: "-",
-            });
-
-            this.isTimedIn = true;
-            this.showSuccessModal = true;
         },
-        confirmCheckOut() {
-            const checkOutTime = new Date();
-            const hoursWorked = Math.floor(
-                (checkOutTime - this.checkInTime) / (1000 * 60 * 60)
-            );
-            const overtime =
-                hoursWorked > 5 ? `${hoursWorked - 5} hour/s` : "0 hour/s";
-            const formattedTime = checkOutTime.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-            });
-
-            const record =
-                this.attendanceRecords[this.attendanceRecords.length - 1];
-            record.timeOut = formattedTime;
-            record.remarks = this.checkOutRemarks || "";
-            record.overtime = overtime;
-
-            this.checkOutRemarks = "";
-            this.isTimedOut = true;
-            this.showSuccessModal = true;
+        showRemarkDetails(record) {
+            this.selectedRecord = record;
         },
     },
+
     mounted() {
-        this.updateClock();
-        this.intervalId = setInterval(this.updateClock, 1000);
-    },
-    beforeUnmount() {
-        clearInterval(this.intervalId);
+        console.log('Employee data:', this.employee);
+        console.log('Attendance records:', this.employee?.attendance);
     },
 };
 </script>
+
+<style scoped>
+textarea {
+    resize: none;
+}
+</style>

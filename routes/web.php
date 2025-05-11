@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AttendanceController;
 use Inertia\Inertia;
 
 // Route::get('/', function () {
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [PageController::class, 'maindashboard'])->name('dashboard');
     Route::get('/inventory', [PageController::class, 'inventory'])->name('inventory');
     Route::get('/attendance', [PageController::class, 'attendance'])->name('attendance');
+    Route::get('/attendance/{employee_id}', [PageController::class, 'employeeAttendance'])->name('attendance.employee');
+    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
+    Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
     Route::get('/history', [PageController::class, 'history'])->name('history');
     
     // Employee page route

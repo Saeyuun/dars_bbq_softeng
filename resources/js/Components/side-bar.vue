@@ -8,16 +8,16 @@
             >
                 <img
                     class="w-full h-full rounded-[30px] object-cover"
-                    src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg"
-                    alt="User Avatar"
+                    :src="$page.props.auth.user.employee?.avatar_url || 'https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg'"
+                    :alt="$page.props.auth.user.name"
                 />
             </Link>
             <p class="profile-name">{{ $page.props.auth.user.name }}</p>
+            <p class="profile-role">{{ $page.props.auth.user.employee?.position || 'Employee' }}</p>
         </div>
 
         <nav class="nav-links">
             <Link :href="route('dashboard')" class="home">Home</Link>
-
             <Link :href="route('dashboard')" class="nav-link">
                 <span class="icon">
                     <svg
@@ -75,7 +75,7 @@
                 History
             </Link>
 
-            <Link :href="route('employees')" class="nav-link">
+            <Link v-if="$page.props.auth.user.permission === 'admin'" :href="route('employees')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -92,6 +92,25 @@
                     </svg>
                 </span>
                 Employees
+            </Link>
+
+            <Link v-else :href="route('attendance')" class="nav-link">
+                <span class="icon">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                </span>
+                My Attendance
             </Link>
         </nav>
 

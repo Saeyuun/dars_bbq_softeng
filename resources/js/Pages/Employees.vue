@@ -11,11 +11,6 @@
                     <input type="text" placeholder="Search employee by name..."
                         class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
                         v-model="searchQuery" />
-                    <button
-                        class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
-                        @click="handleSearch">
-                        Search Employee
-                    </button>
                 </div>
 
                 <button
@@ -41,15 +36,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="employees && employees.length > 0">
-                            <template v-for="employee in employees" :key="employee.employee_id">
-                                <tr class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                        <template v-if="filteredEmployees && filteredEmployees.length > 0">
+                            <template v-for="employee in filteredEmployees" :key="employee.employee_id">
+                                <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                                    @click="viewEmployeeAttendance(employee)">
                                     <td class="px-6 py-4 font-medium text-gray-900">
                                         {{ employee.employee_id }}
                                     </td>
                                     <td class="px-6 py-4 font-medium text-gray-900">
                                         <div class="flex items-center space-x-3">
-                                            <button @click="showProfileImage(employee.avatar_url)">
+                                            <button @click.stop="showProfileImage(employee.avatar_url)">
                                                 <img :src="employee.avatar_url" alt="Avatar"
                                                     class="w-8 h-8 rounded-full hover:ring-2 hover:ring-[#E64444]" />
                                             </button>
@@ -69,15 +65,15 @@
                                         {{ employee.address }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ employee.hireDate }}
+                                        {{ formatDate(employee.created_at) }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <button class="text-gray-500 hover:text-[#E64444]"
-                                            @click="openEditModal(employee)">
+                                            @click.stop="openEditModal(employee)">
                                             Edit
                                         </button>
                                         <button class="ml-4 text-gray-500 hover:text-red-600"
-                                            @click="openDeleteModal(employee)">
+                                            @click.stop="openDeleteModal(employee)">
                                             Delete
                                         </button>
                                     </td>
@@ -129,7 +125,7 @@
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Hire Date:</span>
-                        {{ employee.hireDate || employee.created_at }}
+                        {{ formatDate(employee.created_at) }}
                     </div>
                     <div class="flex justify-end space-x-2 mt-2">
                         <button class="text-gray-500 hover:text-[#E64444]" @click="openEditModal(employee)">
@@ -238,6 +234,12 @@
     <AdminPermission :show="showAdminPermission" @close="showAdminPermission = false" />
     <SearchAlert :show="showSearchAlert" @close="showSearchAlert = false" />
     <EmployeeAdded :show="showEmployeeAdded" @close="showEmployeeAdded = false" />
+
+    <EmployeeAttendanceModal 
+        v-if="showEmployeeAttendanceModal"
+        :employee="selectedEmployee"
+        @close="showEmployeeAttendanceModal = false"
+    />
 </template>
 
 <script>
@@ -250,7 +252,8 @@ import AdminPermission from "../Components/authComponents/AdminPermission.vue";
 import SearchAlert from "../Components/authComponents/SearchAlert.vue";
 import AttendanceTable from "../Components/TablesandCharts/attendance-table.vue";
 import EmployeeAdded from "../Components/authComponents/Employee-added.vue";
-import { Head } from "@inertiajs/vue3";
+import EmployeeAttendanceModal from "../Components/employee-attendance-modal.vue";
+import { Head, router } from "@inertiajs/vue3";
 
 export default {
 
@@ -273,6 +276,7 @@ export default {
         AdminPermission,
         SearchAlert,
         EmployeeAdded,
+        EmployeeAttendanceModal,
         Head,
     },
 
@@ -291,7 +295,33 @@ export default {
             showAdminPermission: true,
             showSearchAlert: false,
             showEmployeeAdded: false,
+            showEmployeeAttendanceModal: false,
+            attendanceRecords: [],
         };
+    },
+
+    computed: {
+        filteredEmployees() {
+            if (!this.employees) return [];
+            
+            const query = this.searchQuery.toLowerCase().trim();
+            if (!query) return this.employees;
+            
+            return this.employees.filter(employee => {
+                const searchableFields = [
+                    employee.employee_name,
+                    employee.email,
+                    employee.employee_id?.toString(),
+                    employee.position,
+                    employee.phone,
+                    employee.address
+                ].filter(Boolean); // Remove null/undefined values
+                
+                return searchableFields.some(field => 
+                    field.toLowerCase().includes(query)
+                );
+            });
+        },
     },
 
     mounted() {
@@ -299,27 +329,7 @@ export default {
         console.log('Employees data:', this.employees);
     },
 
-    computed: {
-        filteredEmployees() {
-            return this.employees ? this.employees.filter((employee) =>
-                (employee.employee_name || '').toLowerCase().includes(this.searchQuery.toLowerCase())
-            ) : [];
-        },
-    },
     methods: {
-        handleSearch() {
-            if (this.searchQuery.trim() === "") {
-                this.showSearchAlert = true;
-                return;
-            }
-
-            if (this.filteredEmployees.length === 0) {
-                this.showSearchAlert = true;
-                return;
-            }
-
-            this.showAttendanceModal = true;
-        },
         toggleAttendance() {
             this.showAttendanceModal = true;
         },
@@ -336,6 +346,32 @@ export default {
             this.selectedProfileImage = imageUrl;
             this.showProfileImageModal = true;
         },
+        viewEmployeeAttendance(employee) {
+            this.selectedEmployee = employee;
+            this.showEmployeeAttendanceModal = true;
+        },
+        getAttendanceStatus(record) {
+            if (!record.time_out) {
+                return 'Present';
+            }
+            const timeIn = new Date(record.time_in);
+            const timeOut = new Date(record.time_out);
+            const hoursWorked = (timeOut - timeIn) / (1000 * 60 * 60);
+            
+            if (hoursWorked < 8) {
+                return 'Late';
+            }
+            return 'Present';
+        },
+        formatDate(date) {
+            if (!date) return '-';
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        },
     },
 };
 </script>
+
