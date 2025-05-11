@@ -2,58 +2,23 @@
     <div class="sidebar-container">
         <h1>Dar's BBQ</h1>
         <div class="profile-section">
-            <div
-                class="relative w-36 h-36 mx-auto cursor-pointer group"
-                @click="triggerFileInput"
+            <Link
+                :href="route('profile.edit')"
+                class="block w-36 h-36 mx-auto group"
             >
                 <img
                     class="w-full h-full rounded-[30px] object-cover"
-                    :src="
-                        userAvatar ||
-                        'https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg'
-                    "
+                    src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg"
                     alt="User Avatar"
                 />
-                <div
-                    class="absolute inset-0 bg-black/50 rounded-[30px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                    <span class="text-white w-6 h-6">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                            />
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                        </svg>
-                    </span>
-                </div>
-                <input
-                    type="file"
-                    ref="fileInput"
-                    class="hidden"
-                    accept="image/*"
-                    @change="handleFileUpload"
-                />
-            </div>
-            <p class="profile-name">Winter</p>
+            </Link>
+            <p class="profile-name">{{ $page.props.auth.user.name }}</p>
         </div>
 
         <nav class="nav-links">
-            <a href="#" class="home">Home</a>
+            <Link :href="route('dashboard')" class="home">Home</Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToDashboard">
+            <Link :href="route('dashboard')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -70,9 +35,9 @@
                     </svg>
                 </span>
                 Dashboard
-            </a>
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToInventory">
+            <Link :href="route('inventory')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -89,9 +54,9 @@
                     </svg>
                 </span>
                 Inventory
-            </a>
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToHistory">
+            <Link :href="route('history')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -108,9 +73,9 @@
                     </svg>
                 </span>
                 History
-            </a>
+            </Link>
 
-            <a href="#" class="nav-link" @click.prevent="goToEmployees">
+            <Link :href="route('employees')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -127,10 +92,15 @@
                     </svg>
                 </span>
                 Employees
-            </a>
+            </Link>
         </nav>
 
-        <button class="logout-button" @click="handleLogout">
+        <Link
+            :href="route('logout')"
+            method="post"
+            as="button"
+            class="logout-button"
+        >
             <span class="icon">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -147,46 +117,17 @@
                 </svg>
             </span>
             Logout
-        </button>
+        </Link>
     </div>
 </template>
 
 <script>
+import { Link } from "@inertiajs/vue3";
+
 export default {
     name: "Sidebar",
-    data() {
-        return {
-            userAvatar: null,
-        };
-    },
-    methods: {
-        handleLogout() {
-            this.$router.push({ name: "Login" });
-        },
-        goToInventory() {
-            this.$router.push({ name: "Inventory" });
-        },
-        goToHistory() {
-            this.$router.push({ name: "History" });
-        },
-        goToDashboard() {
-            this.$router.push({ name: "Dashboard" });
-        },
-        goToEmployees() {
-            this.$router.push({ name: "Employees" });
-        },
-        triggerFileInput() {
-            this.$refs.fileInput.click();
-        },
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Create a preview URL
-                this.userAvatar = URL.createObjectURL(file);
-                // Here you would typically upload the file to your server
-                // and update the userAvatar with the server response URL
-            }
-        },
+    components: {
+        Link,
     },
 };
 </script>
@@ -252,49 +193,49 @@ h1 {
 }
 
 .nav-link {
-    width: 100%;
-    padding: 10px;
-    background-color: #e64444;
-    border-radius: 5px;
-    color: white;
     display: flex;
     align-items: center;
-    transition: background-color 0.3s;
-}
-
-.nav-link.active {
-    background-color: #732222;
+    gap: 10px;
+    color: #8a92a6;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-    background-color: #992e2e;
+    background-color: #f8f9fa;
+    color: #e64444;
 }
 
-.icon {
-    margin-right: 10px;
+.nav-link .icon {
     width: 20px;
     height: 20px;
-    display: inline-block;
 }
 
 .logout-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #e64444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    transition: background-color 0.3s ease;
-    margin-top: 1.5rem;
+    gap: 10px;
+    color: #8a92a6;
+    background: none;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: left;
 }
 
 .logout-button:hover {
-    background-color: #992e2e;
+    background-color: #f8f9fa;
+    color: #e64444;
+}
+
+.logout-button .icon {
+    width: 20px;
+    height: 20px;
 }
 
 @media (max-width: 768px) {

@@ -19,7 +19,7 @@
                     />
                     <button
                         class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
-                        @click="showAttendanceTable = true"
+                        @click="handleSearch"
                     >
                         Search Employee
                     </button>
@@ -131,59 +131,11 @@
                 </table>
             </div>
 
-            <!-- Attendance Table -->
-            <div v-else class="overflow-x-auto bg-white shadow rounded mb-4">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-bold text-gray-800">
-                        <template v-if="filteredEmployees.length === 1">
-                            Details of
-                            <span class="text-[#E64444] font-bold">{{
-                                filteredEmployees[0].name
-                            }}</span>
-                        </template>
-                        <template v-else> Employee Details </template>
-                    </h2>
-                    <button
-                        class="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300"
-                        @click="showAttendanceTable = false"
-                    >
-                        Back
-                    </button>
-                </div>
-                <table class="min-w-full text-sm text-gray-700">
-                    <thead class="bg-gray-100 text-xs uppercase text-gray-600">
-                        <tr>
-                            <th class="px-6 py-3">Remarks</th>
-                            <th class="px-6 py-3">Date</th>
-                            <th class="px-6 py-3">Timed In</th>
-                            <th class="px-6 py-3">Timed Out</th>
-                            <th class="px-6 py-3">Overtime</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="filteredEmployees.length === 0">
-                            <td
-                                colspan="5"
-                                class="text-center py-6 text-gray-500"
-                            >
-                                No employees found matching your search.
-                            </td>
-                        </tr>
-                        <template v-else>
-                            <tr
-                                v-for="employee in filteredEmployees"
-                                :key="employee.id"
-                            >
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
+            <AttendanceTable
+                :show="showAttendanceTable"
+                :employees="filteredEmployees"
+                @close="showAttendanceTable = false"
+            />
 
             <div class="sm:hidden space-y-4">
                 <div
@@ -393,29 +345,11 @@
         </div>
     </div>
 
-    <!-- Admin Permission  -->
-    <div
-        v-if="showAdminPermission"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center"
-        >
-            <h2 class="text-2xl font-bold text-[#E64444] mb-4">
-                Admin Access Required
-            </h2>
-            <p class="text-gray-700 mb-6">
-                This page is for admin users only. Please log in as an admin to
-                access this page.
-            </p>
-            <button
-                class="bg-[#E64444] text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition"
-                @click="showAdminPermission = false"
-            >
-                I Understand
-            </button>
-        </div>
-    </div>
+    <AdminPermission
+        :show="showAdminPermission"
+        @close="showAdminPermission = false"
+    />
+    <SearchAlert :show="showSearchAlert" @close="showSearchAlert = false" />
 </template>
 
 <script>
@@ -424,15 +358,21 @@ import AddEmployeeRecord from "../Components/add-employee-record.vue";
 import EditEmployeeRecord from "../Components/edit-employee.vue";
 import DeleteEmployee from "../Components/delete-employee.vue";
 import EmployeeRecord from "../Components/TablesandCharts/employee-record.vue";
+import AdminPermission from "../Components/authComponents/AdminPermission.vue";
+import SearchAlert from "../Components/authComponents/SearchAlert.vue";
+import AttendanceTable from "../Components/TablesandCharts/attendance-table.vue";
 import { Head } from "@inertiajs/vue3";
 export default {
     name: "Employees",
     components: {
         Sidebar,
+        AttendanceTable,
         AddEmployeeRecord,
         EditEmployeeRecord,
         DeleteEmployee,
         EmployeeRecord,
+        AdminPermission,
+        SearchAlert,
         Head,
     },
     data() {
@@ -447,6 +387,7 @@ export default {
             showProfileImageModal: false,
             selectedProfileImage: null,
             showAdminPermission: true,
+            showSearchAlert: false,
 
             employees: [
                 // {
@@ -492,6 +433,19 @@ export default {
         },
     },
     methods: {
+        handleSearch() {
+            if (this.searchQuery.trim() === "") {
+                this.showSearchAlert = true;
+                return;
+            }
+
+            if (this.filteredEmployees.length === 0) {
+                this.showSearchAlert = true;
+                return;
+            }
+
+            this.showAttendanceTable = true;
+        },
         toggleAttendance() {
             this.showAttendanceModal = true;
         },
