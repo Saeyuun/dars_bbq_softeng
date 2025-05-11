@@ -2,10 +2,51 @@
     <div class="sidebar-container">
         <h1>Dar's BBQ</h1>
         <div class="profile-section">
-            <img
-                class="w-36 h-36 rounded-[30px] mx-auto"
-                src="https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg"
-            />
+            <div
+                class="relative w-36 h-36 mx-auto cursor-pointer group"
+                @click="triggerFileInput"
+            >
+                <img
+                    class="w-full h-full rounded-[30px] object-cover"
+                    :src="
+                        userAvatar ||
+                        'https://i.pinimg.com/736x/a8/45/2b/a8452b369156bec21cf5a665ac5458a4.jpg'
+                    "
+                    alt="User Avatar"
+                />
+                <div
+                    class="absolute inset-0 bg-black/50 rounded-[30px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                    <span class="text-white w-6 h-6">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                        </svg>
+                    </span>
+                </div>
+                <input
+                    type="file"
+                    ref="fileInput"
+                    class="hidden"
+                    accept="image/*"
+                    @change="handleFileUpload"
+                />
+            </div>
             <p class="profile-name">Winter</p>
         </div>
 
@@ -113,6 +154,11 @@
 <script>
 export default {
     name: "Sidebar",
+    data() {
+        return {
+            userAvatar: null,
+        };
+    },
     methods: {
         handleLogout() {
             this.$router.push({ name: "Login" });
@@ -128,6 +174,18 @@ export default {
         },
         goToEmployees() {
             this.$router.push({ name: "Employees" });
+        },
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Create a preview URL
+                this.userAvatar = URL.createObjectURL(file);
+                // Here you would typically upload the file to your server
+                // and update the userAvatar with the server response URL
+            }
         },
     },
 };
