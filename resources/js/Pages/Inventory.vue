@@ -10,7 +10,6 @@
         <div class="hidden sm:block w-64">
             <Sidebar />
         </div>
-
         <div class="flex-1 p-4">
             <div class="flex justify-between items-center mb-4">
                 <InventoryHeader />
@@ -40,9 +39,8 @@
                             <th class="px-4 py-3 text-left">Item</th>
                             <th class="px-4 py-3 text-left">Status</th>
                             <th class="px-4 py-3 text-right">Quantity</th>
-                            <th class="px-4 py-3 text-left">Date Updated</th>
                             <th class="px-4 py-3 text-left">Description</th>
-                            <th class="px-4 py-3 text-right">Actions</th>
+                            <th class="px-4 py-3 text-left">Date Updated</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,10 +58,10 @@
                                 {{ item.quantity }}
                             </td>
                             <td class="px-4 py-3 text-left">
-                                {{ item.dateUpdated }}
+                                {{ item.description }}
                             </td>
                             <td class="px-4 py-3 text-left">
-                                {{ item.description }}
+                                {{ item.dateUpdated }}
                             </td>
                             <td class="px-4 py-3 text-right space-x-2">
                                 <button

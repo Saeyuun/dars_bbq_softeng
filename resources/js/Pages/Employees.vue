@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Employee Management" />
     <div class="flex flex-col sm:flex-row min-h-screen">
         <div class="hidden sm:block">
@@ -15,8 +16,7 @@
                         type="text"
                         placeholder="Search employee by name..."
                         class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E64444]"
-                        v-model="searchQuery"
-                    />
+                        v-model="searchQuery" />
                     <button
                         class="rounded-md bg-[#E64444] px-3 py-2 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-auto"
                         @click="handleSearch"
@@ -27,8 +27,7 @@
 
                 <button
                     class="rounded-md bg-[#E64444] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 ease-in-out hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 w-full sm:w-auto"
-                    @click="showAddEmployeeModal = true"
-                >
+                    @click="showAddEmployeeModal = true">
                     Add Employee Record
                 </button>
             </div>
@@ -138,25 +137,18 @@
             />
 
             <div class="sm:hidden space-y-4">
-                <div
-                    v-for="employee in filteredEmployees"
-                    :key="employee.id"
-                    class="bg-white rounded shadow p-4"
-                >
+                <div v-for="employee in filteredEmployees" :key="employee.id" class="bg-white rounded shadow p-4">
                     <div class="flex items-center space-x-3 mb-2">
                         <button @click="showProfileImage(employee.avatar)">
-                            <img
-                                :src="employee.avatar"
-                                alt="Avatar"
-                                class="w-10 h-10 rounded-full hover:ring-2 hover:ring-[#E64444]"
-                            />
+                            <img :src="employee.avatar" alt="Avatar"
+                                class="w-10 h-10 rounded-full hover:ring-2 hover:ring-[#E64444]" />
                         </button>
                         <div class="font-bold text-[#E64444] text-lg">
                             {{ employee.name }}
                         </div>
                     </div>
                     <div class="text-sm mb-1">
-                        <span class="font-semibold">ID:</span> {{ employee.id }}
+                        <span class="font-semibold">ID:</span> {{ employee.employee_id }}
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Email:</span>
@@ -164,7 +156,7 @@
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Contact:</span>
-                        {{ employee.contact }}
+                        {{ employee.phne }}
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Position:</span>
@@ -176,19 +168,13 @@
                     </div>
                     <div class="text-sm mb-1">
                         <span class="font-semibold">Hire Date:</span>
-                        {{ employee.hireDate }}
+                        {{ employee.created_at }}
                     </div>
                     <div class="flex justify-end space-x-2 mt-2">
-                        <button
-                            class="text-gray-500 hover:text-[#E64444]"
-                            @click="openEditModal(employee)"
-                        >
+                        <button class="text-gray-500 hover:text-[#E64444]" @click="openEditModal(employee)">
                             Edit
                         </button>
-                        <button
-                            class="text-gray-500 hover:text-red-600"
-                            @click="openDeleteModal(employee)"
-                        >
+                        <button class="text-gray-500 hover:text-red-600" @click="openDeleteModal(employee)">
                             Delete
                         </button>
                     </div>
@@ -203,10 +189,8 @@
         class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showAddEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showAddEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
@@ -216,71 +200,43 @@
         </div>
     </div>
 
-    <div
-        v-if="showEditEmployeeModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showEditEmployeeModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showEditEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showEditEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
                 Edit Employee
             </h2>
-            <EditEmployeeRecord
-                :employee="selectedEmployee"
-                @edit-employee="editEmployee"
-            />
+            <EditEmployeeRecord :employee="selectedEmployee" @edit-employee="editEmployee" />
         </div>
     </div>
 
-    <div
-        v-if="showDeleteEmployeeModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showDeleteEmployeeModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showDeleteEmployeeModal = false"
-            >
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showDeleteEmployeeModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
                 Delete Employee
             </h2>
-            <DeleteEmployee
-                :show="showDeleteEmployeeModal"
-                :employee="selectedEmployee"
-                @close="showDeleteEmployeeModal = false"
-                @delete="deleteEmployee"
-            />
+            <DeleteEmployee :show="showDeleteEmployeeModal" :employee="selectedEmployee"
+                @close="showDeleteEmployeeModal = false" @delete="deleteEmployee" />
         </div>
     </div>
 
-    <div
-        v-if="showDeleteSuccess"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
-        >
+    <div v-if="showDeleteSuccess"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
             <div class="flex flex-col items-center">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-16 text-red-500 mb-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500 mb-4" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h2 class="text-lg font-bold text-gray-800">
                     Employee Deleted
@@ -290,17 +246,11 @@
     </div>
 
     <!-- Search Result Modal -->
-    <div
-        v-if="showAttendanceModal"
-        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative"
-        >
-            <button
-                class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
-                @click="showAttendanceModal = false"
-            >
+    <div v-if="showAttendanceModal"
+        class="fixed inset-0 bg-[#FFEDED] bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full relative">
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-[#E64444]"
+                @click="showAttendanceModal = false">
                 ✕
             </button>
             <h2 class="text-xl font-bold text-center text-[#E64444] mb-4">
@@ -311,11 +261,8 @@
     </div>
 
     <!-- Clickable Image -->
-    <div
-        v-if="showProfileImageModal"
-        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
-        @click.self="showProfileImageModal = false"
-    >
+    <div v-if="showProfileImageModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+        @click.self="showProfileImageModal = false">
         <div class="relative bg-white rounded-lg shadow-lg p-4 max-w-md w-full">
             <button
                 class="absolute -top-3 -right-3 bg-white rounded-full shadow-md p-1 hover:bg-gray-100"
@@ -363,7 +310,12 @@ import SearchAlert from "../Components/authComponents/SearchAlert.vue";
 import AttendanceTable from "../Components/TablesandCharts/attendance-table.vue";
 import { Head } from "@inertiajs/vue3";
 export default {
-    name: "Employees",
+
+    name: "employees",
+    props: {
+        employees: Array,
+    },
+
     components: {
         Sidebar,
         AttendanceTable,
@@ -391,7 +343,7 @@ export default {
 
             employees: [
                 // {
-                //     id: 1,
+                //     id: "",
                 //     name: "",
                 //     email: "",
                 //     position: "",
@@ -400,26 +352,7 @@ export default {
                 //     hireDate: "",
                 //     avatar: "",
                 // },
-                // {
-                //     id: 2,
-                //     name: "",
-                //     email: "",
-                //     position: "",
-                //     contact: "",
-                //     address: "",
-                //     hireDate: "",
-                //     avatar: "",
-                // },
-                // {
-                //     id: 2,
-                //     name: "",
-                //     email: "",
-                //     position: "",
-                //     contact: "",
-                //     address: "",
-                //     hireDate: "",
-                //     avatar: "",
-                // },
+
             ],
         };
     },
