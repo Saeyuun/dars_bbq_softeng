@@ -38,11 +38,9 @@
                     </form>
                 </div>
             </div>
-
             <div class="mb-4">
                 <DateFilter @date-change="updateSelectedDate" />
             </div>
-
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
