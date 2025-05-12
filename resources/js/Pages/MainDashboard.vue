@@ -1,4 +1,5 @@
 <template>
+    <Head title="Dashboard" />
     <div>
         <Sidebar class="fixed top-0 left-0 h-full w-64" />
         <div class="ml-64 flex flex-col min-h-screen">
@@ -21,13 +22,14 @@
 import ProgresstrackerHeader from "@/Components/Headers/progresstracker-header.vue";
 import Sidebar from "@/Components/side-bar.vue";
 import SalesReportChart from "@/Components/TablesandCharts/sales-report-chart.vue";
-
+import { Head } from "@inertiajs/vue3";
 export default {
     name: "OwnerDashboard",
     components: {
         ProgresstrackerHeader,
         Sidebar,
         SalesReportChart,
+        Head,
     },
 };
 </script>
