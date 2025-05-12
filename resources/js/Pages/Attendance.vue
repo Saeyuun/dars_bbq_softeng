@@ -74,18 +74,9 @@
                 </div>
             </div>
 
-            <div
-                class="flex flex-col md:flex-row md:items-center md:justify-between mb-2"
-            >
-                <div
-                    class="text-lg font-bold text-[#E64444] mb-2 md:mb-0 uppercase tracking-wide"
-                >
-                    Attendance Record
-                </div>
-                <div><DateFilter @date-change="updateSelectedDate" /></div>
+            <div class="mb-4">
+                <DateFilter @date-change="updateSelectedDate" />
             </div>
-
-            <!-- Attendance Table -->
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
