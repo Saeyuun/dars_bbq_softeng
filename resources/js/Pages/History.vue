@@ -123,53 +123,15 @@ export default {
         DateFilter,
         Head,
     },
+    props: {
+        items: {
+            type: Array,
+            required: true,
+        },
+    },
     data() {
         return {
             selectedDate: null,
-            items: [
-                {
-                    id: 127,
-                    name: "Chicken Wings",
-                    status: "Created",
-                    newQuantity: 10,
-                    dateAdded: "2023-04-01",
-                },
-                {
-                    id: 126,
-                    name: "Pork Ribs",
-                    status: "Updated",
-                    newQuantity: 15,
-                    dateAdded: "2023-03-28",
-                },
-                {
-                    id: 125,
-                    name: "Beef Brisket",
-                    status: "Deleted",
-                    newQuantity: 0,
-                    dateAdded: "2023-03-15",
-                },
-                {
-                    id: 124,
-                    name: "Sausages",
-                    status: "Created",
-                    newQuantity: 8,
-                    dateAdded: "2023-04-05",
-                },
-                {
-                    id: 123,
-                    name: "Corn on the Cob",
-                    status: "Created",
-                    newQuantity: 5,
-                    dateAdded: "2023-04-10",
-                },
-                {
-                    id: 122,
-                    name: "BBQ Sauce",
-                    status: "Deleted",
-                    newQuantity: 0,
-                    dateAdded: "2023-03-20",
-                },
-            ],
         };
     },
     computed: {

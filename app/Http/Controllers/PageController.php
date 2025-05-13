@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Inventory;
 
 class PageController extends Controller
 {
@@ -48,7 +49,19 @@ class PageController extends Controller
 
     public function inventory()
     {
-        return Inertia::render('Inventory');
+        $inventory = Inventory::with('item')->get();
+        return Inertia::render('Inventory', [
+            'items' => $inventory->map(function ($inv) {
+                return [
+                    'id' => $inv->item->item_id,
+                    'name' => $inv->item->item_name,
+                    'status' => $inv->status,
+                    'quantity' => $inv->quantity,
+                    'description' => $inv->item->description,
+                    'dateUpdated' => $inv->updated_at->format('Y-m-d'),
+                ];
+            })
+        ]);
     }
 
     public function attendance()

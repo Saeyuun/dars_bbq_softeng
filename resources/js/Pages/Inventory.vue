@@ -223,7 +223,7 @@ import InventoryHeader from "@/Components/Headers/inventory-header.vue";
 import AddItem from "@/Components/add-item.vue";
 import EditItem from "@/Components/edit-item.vue";
 import UpdateStock from "@/Components/update-stock.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -233,6 +233,10 @@ export default {
         EditItem,
         UpdateStock,
         Head,
+    },
+    props: {
+        items: Array,
+        flash: Object
     },
     data() {
         return {
@@ -245,7 +249,6 @@ export default {
             searchQuery: "",
             deleteSuccessMessage: "",
             addSuccessMessage: "",
-            items: [],
         };
     },
     computed: {
@@ -255,58 +258,71 @@ export default {
             );
         },
     },
+    watch: {
+        flash: {
+            handler(newFlash) {
+                if (newFlash.success) {
+                    this.addSuccessMessage = newFlash.success;
+                    setTimeout(() => {
+                        this.addSuccessMessage = "";
+                    }, 3000);
+                }
+            },
+            immediate: true
+        }
+    },
     methods: {
-        addItem(item) {
-            const newItem = {
-                ...item,
-                id: this.items.length + 1,
-                dateUpdated: new Date().toISOString().split("T")[0],
-            };
-            this.items.push(newItem);
-            this.showAddItemModal = false;
-            this.addSuccessMessage = "Item successfully added!";
-            setTimeout(() => {
-                this.addSuccessMessage = "";
-            }, 1000);
+        addItem(formData) {
+            console.log('Adding item with data:', formData);
+            const form = useForm(formData);
+            form.post(route('inventory.store'), {
+                onSuccess: () => {
+                    this.showAddItemModal = false;
+                    this.addSuccessMessage = 'Item added successfully';
+                    setTimeout(() => {
+                        this.addSuccessMessage = '';
+                    }, 3000);
+                },
+                onError: (errors) => {
+                    console.error('Error adding item:', errors);
+                },
+            });
         },
         openEditModal(item) {
             this.selectedItem = { ...item };
             this.showEditItemModal = true;
         },
         updateItem(updated) {
-            const index = this.items.findIndex((i) => i.id === updated.id);
-            if (index !== -1) {
-                this.items.splice(index, 1, updated);
-            }
-            this.showEditItemModal = false;
+            const form = useForm(updated);
+            form.put(route('inventory.update', updated.id), {
+                onSuccess: () => {
+                    this.showEditItemModal = false;
+                }
+            });
         },
         openUpdateStockModal(item) {
             this.selectedItem = { ...item };
             this.showUpdateStockModal = true;
         },
         updateStock(updated) {
-            const index = this.items.findIndex((i) => i.id === updated.id);
-            if (index !== -1) {
-                this.items.splice(index, 1, updated);
-            }
-            this.showUpdateStockModal = false;
+            const form = useForm(updated);
+            form.put(route('inventory.update', updated.id), {
+                onSuccess: () => {
+                    this.showUpdateStockModal = false;
+                }
+            });
         },
         openDeleteModal(item) {
             this.selectedItem = item;
             this.showDeleteModal = true;
         },
         confirmDelete() {
-            const index = this.items.findIndex(
-                (i) => i.id === this.selectedItem.id
-            );
-            if (index !== -1) {
-                this.items.splice(index, 1);
-                this.deleteSuccessMessage = "Item successfully deleted!";
-                setTimeout(() => {
-                    this.deleteSuccessMessage = "";
-                }, 1000);
-            }
-            this.showDeleteModal = false;
+            const form = useForm({});
+            form.delete(route('inventory.destroy', this.selectedItem.id), {
+                onSuccess: () => {
+                    this.showDeleteModal = false;
+                }
+            });
         },
     },
 };
