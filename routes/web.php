@@ -9,6 +9,17 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\InventoryController;
 use Inertia\Inertia;
 
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
+
+
+
 Route::get('/', function () {
     return Inertia::render('Homepage');
 });
@@ -29,7 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
     
     // History route
-    Route::get('/history', [PageController::class, 'history'])->name('history');
+    Route::get('/history', [InventoryHistoryController::class, 'index'])->name('history');
+    Route::get('/inventory-history', [InventoryHistoryController::class, 'index'])->name('inventory.history');
     
     // Employee routes
     Route::get('/employees', [PageController::class, 'employees'])->name('employees');
@@ -38,10 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
     
     // Inventory routes
-    Route::get('/inventory', [PageController::class, 'inventory'])->name('inventory');
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
     Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
-    Route::put('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
-    Route::delete('/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::put('/inventory/{item}', [InventoryController::class, 'update'])->name('inventory.update');
+    Route::delete('/inventory/{item}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::get('/inventory/search', [InventoryController::class, 'search'])->name('inventory.search');
 });
 
 require __DIR__ . '/auth.php';

@@ -15,94 +15,77 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventory = Inventory::with('item')->get();
+        $items = Item::with('inventory')->get();
         return Inertia::render('Inventory', [
-            'items' => $inventory->map(function ($inv) {
-                return [
-                    'id' => $inv->item->item_id,
-                    'name' => $inv->item->item_name,
-                    'status' => $inv->status,
-                    'quantity' => $inv->quantity,
-                    'description' => $inv->item->description,
-                    'dateUpdated' => $inv->updated_at->format('Y-m-d'),
-                ];
-            })
+            'items' => $items
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'item_name' => 'required|string',
+            'item_name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'unit' => 'required|string',
+            'unit' => 'required|string|max:50',
             'quantity' => 'required|integer|min:0',
-            'status' => 'required|string|in:available,out_of_stock',
-            'employee_id' => 'required|exists:employee,employee_id'
+            'status' => 'required|in:available,out_of_stock'
         ]);
 
-        try {
-            DB::beginTransaction();
+        $item = Item::create([
+            'item_name' => $request->item_name,
+            'description' => $request->description,
+            'unit' => $request->unit
+        ]);
 
-            // Create the item first
-            $item = Item::create([
-                'item_name' => $request->item_name,
-                'description' => $request->description,
-                'unit' => $request->unit
-            ]);
+        Inventory::create([
+            'item_id' => $item->item_id,
+            'employee_id' => auth()->user()->employee_id,
+            'quantity' => $request->quantity,
+            'status' => $request->status
+        ]);
 
-            Log::info('Item created:', ['item' => $item->toArray()]);
-
-            // Create the inventory record
-            $inventory = Inventory::create([
-                'item_id' => $item->item_id,
-                'employee_id' => $request->employee_id,
-                'quantity' => $request->quantity,
-                'status' => $request->status
-            ]);
-
-            Log::info('Inventory created:', ['inventory' => $inventory->toArray()]);
-
-            DB::commit();
-
-            return redirect()->route('inventory')->with('success', 'Item added successfully');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error creating item and inventory:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return redirect()->route('inventory')->with('error', 'Error creating item: ' . $e->getMessage());
-        }
+        return redirect()->back()->with('success', 'Item added successfully');
     }
 
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request, Item $item)
     {
         $request->validate([
+            'item_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'unit' => 'required|string|max:50',
             'quantity' => 'required|integer|min:0',
-            'status' => 'required|string|in:available,out_of_stock',
+            'status' => 'required|in:available,out_of_stock'
         ]);
 
-        $inventory->update($request->only(['quantity', 'status']));
-        return redirect()->route('inventory')->with('success', 'Item updated successfully');
+        $item->update([
+            'item_name' => $request->item_name,
+            'description' => $request->description,
+            'unit' => $request->unit
+        ]);
+
+        $item->inventory->update([
+            'quantity' => $request->quantity,
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success', 'Item updated successfully');
     }
 
-    public function destroy(Inventory $inventory)
+    public function destroy(Item $item)
     {
-        try {
-            DB::beginTransaction();
-            
-            // Delete the associated item first
-            $inventory->item->delete();
-            // Then delete the inventory record
-            $inventory->delete();
-            
-            DB::commit();
-            return redirect()->route('inventory')->with('success', 'Item deleted successfully');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('inventory')->with('error', 'Error deleting item: ' . $e->getMessage());
-        }
+        $item->inventory->delete();
+        $item->delete();
+        return redirect()->back()->with('success', 'Item deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $items = Item::with('inventory')
+            ->where('item_name', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%")
+            ->get();
+        
+        return response()->json($items);
     }
 }

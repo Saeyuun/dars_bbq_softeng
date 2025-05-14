@@ -123,15 +123,12 @@ export default {
         DateFilter,
         Head,
     },
-    props: {
-        items: {
-            type: Array,
-            required: true,
-        },
-    },
     data() {
         return {
             selectedDate: null,
+            items: [
+              
+            ],
         };
     },
     computed: {
