@@ -13,7 +13,9 @@ class Item extends Model
     protected $fillable = [
         'item_name',
         'description',
-        'unit'
+        'unit',
+        'created_at',
+        'updated_at'
     ];
 
     public function inventory() {

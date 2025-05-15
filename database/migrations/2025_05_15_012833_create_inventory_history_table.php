@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('inventory_history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('inventory_id')->nullable();
-            $table->string('item_name'); // Store the item name
             $table->string('changes'); // 'added', 'updated', 'deleted'
             $table->integer('quantity_at_time')->nullable();
             $table->string('status_at_time')->nullable();
