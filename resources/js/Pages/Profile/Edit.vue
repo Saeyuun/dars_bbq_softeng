@@ -5,8 +5,9 @@ import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import logo from "@/assets/image-1.png";
+import Notification from "@/Components/Notification.vue";
 
-defineProps({
+const props = defineProps({
     mustVerifyEmail: {
         type: Boolean,
     },
@@ -20,6 +21,10 @@ defineProps({
 });
 
 const previewUrl = ref(null);
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const notificationType = ref('success');
+
 const pictureForm = useForm({
     profile_picture: null,
 });
@@ -40,7 +45,21 @@ function submitPicture() {
         onSuccess: () => {
             previewUrl.value = null;
             pictureForm.reset("profile_picture");
+            notificationMessage.value = 'Profile picture updated successfully';
+            notificationType.value = 'success';
+            showNotification.value = true;
+            setTimeout(() => {
+                showNotification.value = false;
+            }, 3000);
         },
+        onError: () => {
+            notificationMessage.value = 'Failed to update profile picture';
+            notificationType.value = 'error';
+            showNotification.value = true;
+            setTimeout(() => {
+                showNotification.value = false;
+            }, 3000);
+        }
     });
 }
 </script>
@@ -70,7 +89,7 @@ function submitPicture() {
                         <img
                             :src="
                                 previewUrl ||
-                                (user && user.profile_picture_url) ||
+                                (user && user.employee?.avatar_url) ||
                                 '/images/default-avatar.png'
                             "
                             alt="Profile Picture"
@@ -107,4 +126,10 @@ function submitPicture() {
             </div>
         </div>
     </div>
+    <Notification
+        :show="showNotification"
+        :message="notificationMessage"
+        :type="notificationType"
+        @close="showNotification = false"
+    />
 </template>
