@@ -13,31 +13,39 @@
                 <HistoryHeader />
             </div>
 
-            <!-- Date Filter -->
-            <div class="mb-4">
-                <input type="date" v-model="dateFilter" 
+            <!-- Search and Filter -->
+            <div class="mb-4 flex flex-col sm:flex-row gap-2">
+                <select v-model="searchColumn" 
+                    class="w-full sm:w-1/4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#E64444]">
+                    <option value="item_name">Item Name</option>
+                    <option value="quantity">Quantity</option>
+                    <option value="action">Action</option>
+                    <option value="employee_name">Employee Name</option>
+                </select>
+                <input type="text" v-model="searchQuery" 
+                    :placeholder="'Search by ' + searchColumn.replace('_', ' ')"
                     class="w-full sm:w-1/3 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#E64444]">
             </div>
 
             <!-- History Table -->
             <div class="overflow-x-auto bg-white shadow rounded mb-4">
-                <table class="min-w-full text-sm text-gray-700">
+                <table class="min-w-full text-sm text-gray-700 table-fixed">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
-                            <th class="px-4 py-3 text-left">Date</th>
-                            <th class="px-4 py-3 text-left">Item Name</th>
-                            <th class="px-4 py-3 text-left">Action</th>
-                            <th class="px-4 py-3 text-left">Quantity</th>
-                            <th class="px-4 py-3 text-left">Status</th>
-                            <th class="px-4 py-3 text-left">Updated By</th>
+                            <th class="w-[180px] px-4 py-3 text-left">Date</th>
+                            <th class="w-[200px] px-4 py-3 text-left">Item Name</th>
+                            <th class="w-[120px] px-4 py-3 text-left">Action</th>
+                            <th class="w-[100px] px-4 py-3 text-left">Quantity</th>
+                            <th class="w-[120px] px-4 py-3 text-left">Status</th>
+                            <th class="w-[150px] px-4 py-3 text-left">Updated By</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="record in filteredHistory" :key="record.id" class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-3 text-left">
-                                {{ new Date(record.created_at).toLocaleDateString() }}
+                            <td class="px-4 py-3 text-left truncate">
+                                {{ new Date(record.created_at).toLocaleString() }}
                             </td>
-                            <td class="px-4 py-3 text-left">{{ record.item_name }}</td>
+                            <td class="px-4 py-3 text-left truncate">{{ record.item_name }}</td>
                             <td class="px-4 py-3 text-left">
                                 <span :class="{
                                     'px-2 py-1 rounded text-xs': true,
@@ -58,7 +66,7 @@
                                     {{ record.status === 'out_of_stock' ? 'Out of Stock' : 'Available' }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 text-left">{{ record.employee_name }}</td>
+                            <td class="px-4 py-3 text-left truncate">{{ record.employee_name }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -86,17 +94,21 @@ export default {
     },
     data() {
         return {
-            dateFilter: ''
+            searchQuery: '',
+            searchColumn: 'item_name'
         };
     },
     computed: {
         filteredHistory() {
-            if (!this.dateFilter) return this.history;
+            if (!this.searchQuery.trim()) return this.history;
             
-            const filterDate = new Date(this.dateFilter);
+            const searchTerm = this.searchQuery.toLowerCase();
             return this.history.filter(record => {
-                const recordDate = new Date(record.created_at);
-                return recordDate.toDateString() === filterDate.toDateString();
+                const value = record[this.searchColumn];
+                if (this.searchColumn === 'quantity') {
+                    return value.toString().includes(searchTerm);
+                }
+                return value.toLowerCase().includes(searchTerm);
             });
         }
     }

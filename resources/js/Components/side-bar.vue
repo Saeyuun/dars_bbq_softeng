@@ -18,7 +18,7 @@
 
         <nav class="nav-links">
             <Link :href="route('dashboard')" class="home">Home</Link>
-            <Link :href="route('dashboard')" class="nav-link">
+            <Link :href="route('dashboard')" class="nav-link" v-if="$page.props.auth.user.permission === 'admin'">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@
                 Employees
             </Link>
 
-            <Link v-else :href="route('attendance')" class="nav-link">
+            <Link v-if="$page.props.auth.user.permission !== 'admin'" :href="route('attendance')" class="nav-link">
                 <span class="icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
