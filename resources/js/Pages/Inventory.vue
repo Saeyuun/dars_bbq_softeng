@@ -36,18 +36,20 @@
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
                             <th class="px-4 py-3 text-left">ID</th>
+                            <th class="px-4 py-3 text-left">Log ID</th>
                             <th class="px-4 py-3 text-left">Item</th>
                             <th class="px-4 py-3 text-left">Status</th>
                             <th class="px-4 py-3 text-right">Quantity</th>
                             <th class="px-4 py-3 text-left">Description</th>
-                                <th class="px-4 py-3 text-left">Unit</th>
+                            <th class="px-4 py-3 text-left">Unit</th>
                             <th class="px-4 py-3 text-left">Date Updated</th>
-                                <th class="px-4 py-3 text-left">Actions</th>
+                            <th class="px-4 py-3 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                             <tr v-for="item in filteredItems" :key="item.item_id" class="border-b hover:bg-gray-50">
                                 <td class="px-4 py-3 text-left">{{ item.item_id }}</td>
+                                <td class="px-4 py-3 text-left">{{ item.inventory?.history?.[0]?.id || '-' }}</td>
                                 <td class="px-4 py-3 text-left">{{ item.item_name }}</td>
                             <td class="px-4 py-3 text-left">
                                     <span :class="{

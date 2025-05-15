@@ -32,6 +32,7 @@
                 <table class="min-w-full text-sm text-gray-700 table-fixed">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
+                            <th class="w-[100px] px-4 py-3 text-left">Log ID</th>
                             <th class="w-[180px] px-4 py-3 text-left">Date</th>
                             <th class="w-[200px] px-4 py-3 text-left">Item Name</th>
                             <th class="w-[120px] px-4 py-3 text-left">Action</th>
@@ -42,6 +43,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="record in filteredHistory" :key="record.id" class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3 text-left">{{ record.id }}</td>
                             <td class="px-4 py-3 text-left truncate">
                                 {{ new Date(record.created_at).toLocaleString() }}
                             </td>
