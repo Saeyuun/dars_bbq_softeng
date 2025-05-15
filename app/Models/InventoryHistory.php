@@ -11,6 +11,8 @@ class InventoryHistory extends Model
     protected $fillable = [
         'inventory_id',
         'changes',
+        'quantity_at_time',
+        'status_at_time'
     ];
 
     // Primary key

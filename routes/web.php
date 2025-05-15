@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/inventory/search', [InventoryController::class, 'search'])->name('inventory.search');
 
     // History route
-    Route::get('/history', [PageController::class, 'history'])->name('history');
+    Route::get('/history', [HistoryController::class, 'index'])->name('history');
 });
 
 require __DIR__ . '/auth.php';

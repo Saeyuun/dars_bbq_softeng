@@ -42,7 +42,7 @@
                                 <span :class="{
                                     'px-2 py-1 rounded text-xs': true,
                                     'bg-green-100 text-green-800': record.action === 'added',
-                                    'bg-blue-100 text-blue-800': record.action === 'updated',
+                                    'bg-blue-100 text-blue-800': record.action === 'updated' || record.action === 'updated to',
                                     'bg-red-100 text-red-800': record.action === 'deleted'
                                 }">
                                     {{ record.action }}
@@ -55,7 +55,7 @@
                                     'bg-green-100 text-green-800': record.status === 'available',
                                     'bg-red-100 text-red-800': record.status === 'out_of_stock'
                                 }">
-                                    {{ record.status }}
+                                    {{ record.status === 'out_of_stock' ? 'Out of Stock' : 'Available' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-left">{{ record.employee_name }}</td>

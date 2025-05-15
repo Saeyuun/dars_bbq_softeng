@@ -27,8 +27,6 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Store request data:', $request->all());
-
         $request->validate([
             'item_name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -40,25 +38,10 @@ class InventoryController extends Controller
 
         DB::beginTransaction();
         try {
-            Log::info('Creating item with data:', [
-                'item_name' => $request->item_name,
-                'description' => $request->description,
-                'unit' => $request->unit
-            ]);
-
             $item = Item::create([
                 'item_name' => $request->item_name,
                 'description' => $request->description,
                 'unit' => $request->unit
-            ]);
-
-            Log::info('Item created:', $item->toArray());
-
-            Log::info('Creating inventory with data:', [
-                'item_id' => $item->item_id,
-                'employee_id' => auth()->user()->employee_id,
-                'quantity' => $request->inventory['quantity'],
-                'status' => $request->inventory['status']
             ]);
 
             $inventory = Inventory::create([
@@ -68,12 +51,12 @@ class InventoryController extends Controller
                 'status' => $request->inventory['status']
             ]);
 
-            Log::info('Inventory created:', $inventory->toArray());
-
             // Log the creation in inventory history
             InventoryHistory::create([
                 'inventory_id' => $inventory->inventory_id,
-                'changes' => 'added'
+                'changes' => 'added',
+                'quantity_at_time' => $request->inventory['quantity'],
+                'status_at_time' => $request->inventory['status']
             ]);
 
             DB::commit();
@@ -81,8 +64,7 @@ class InventoryController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to add item: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            return redirect()->back()->with('error', 'Failed to add item: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add item');
         }
     }
 
@@ -107,29 +89,43 @@ class InventoryController extends Controller
                 ]);
             }
 
-            if ($item->inventory) {
-                $item->inventory->update([
+            // Get fresh inventory data to ensure we have the current values
+            $currentInventory = Inventory::where('item_id', $item->item_id)->first();
+
+            if ($currentInventory) {
+                // Determine status based on quantity
+                $newStatus = $request->inventory['quantity'] === 0 ? 'out_of_stock' : 'available';
+
+                // Update the inventory first
+                $currentInventory->update([
                     'quantity' => $request->inventory['quantity'],
-                    'status' => $request->inventory['status']
+                    'status' => $newStatus
                 ]);
 
-                // Log the update in inventory history
+                // Log the update in inventory history with the new values
                 InventoryHistory::create([
-                    'inventory_id' => $item->inventory->inventory_id,
-                    'changes' => 'updated'
+                    'inventory_id' => $currentInventory->inventory_id,
+                    'changes' => 'updated',
+                    'quantity_at_time' => $request->inventory['quantity'],
+                    'status_at_time' => $newStatus
                 ]);
             } else {
+                // Determine status based on quantity for new items
+                $newStatus = $request->inventory['quantity'] === 0 ? 'out_of_stock' : 'available';
+
                 $inventory = Inventory::create([
                     'item_id' => $item->item_id,
                     'employee_id' => auth()->user()->employee_id,
                     'quantity' => $request->inventory['quantity'],
-                    'status' => $request->inventory['status']
+                    'status' => $newStatus
                 ]);
 
                 // Log the creation in inventory history
                 InventoryHistory::create([
                     'inventory_id' => $inventory->inventory_id,
-                    'changes' => 'added'
+                    'changes' => 'added',
+                    'quantity_at_time' => $request->inventory['quantity'],
+                    'status_at_time' => $newStatus
                 ]);
             }
 
@@ -150,7 +146,9 @@ class InventoryController extends Controller
                 // Log the deletion in inventory history
                 InventoryHistory::create([
                     'inventory_id' => $item->inventory->inventory_id,
-                    'changes' => 'deleted'
+                    'changes' => 'deleted',
+                    'quantity_at_time' => $item->inventory->quantity,
+                    'status_at_time' => $item->inventory->status
                 ]);
 
                 $item->inventory->delete();

@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('inventory_history', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('inventory_id');
+            $table->unsignedBigInteger('inventory_id')->nullable();
             $table->string('changes'); // 'added', 'updated', 'deleted'
+            $table->integer('quantity_at_time')->nullable();
+            $table->string('status_at_time')->nullable();
             $table->timestamps();
-            $table->foreign('inventory_id')->references('inventory_id')->on('inventory')->onDelete('cascade');
+            $table->foreign('inventory_id')
+                  ->references('inventory_id')
+                  ->on('inventory')
+                  ->onDelete('set null');
         });
     }
 
