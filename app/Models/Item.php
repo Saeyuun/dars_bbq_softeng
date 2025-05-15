@@ -10,13 +10,19 @@ class Item extends Model
 
     protected $primaryKey = 'item_id';
 
-    protected $fillable = ['item_name', 'description', 'unit'];
+    protected $fillable = [
+        'item_name',
+        'description',
+        'unit',
+        'created_at',
+        'updated_at'
+    ];
 
     public function inventory() {
-        return $this->hasMany(Inventory::class, 'item_id', 'item_id');
+        return $this->hasOne(Inventory::class, 'item_id', 'item_id');
     }
 
     public function itemlist() {
-        return $this->hasMany(Item::class, 'item_id', 'item_id');
+        return $this->hasMany(ItemList::class, 'item_id', 'item_id');
     }
 }

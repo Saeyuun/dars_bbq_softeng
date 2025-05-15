@@ -1,150 +1,104 @@
 <template>
     <Head title="History" />
     <div class="flex flex-col sm:flex-row min-h-screen bg-gray-50">
-        <!-- Sidebar only on screens >= sm -->
-        <div class="hidden sm:block w-64 bg-white">
-            <Sidebar />
+        <div class="sm:hidden flex items-center justify-center p-4 bg-white shadow-md">
+            <h1 class="text-xl font-bold text-[#E64444]">History</h1>
         </div>
 
-        <div class="flex-1 p-4 sm:p-5">
-            <HistoryHeader />
-
-            <div class="mb-4">
-                <DateFilter @date-change="updateSelectedDate" />
+        <div class="hidden sm:block w-64">
+            <Sidebar />
+        </div>
+        <div class="flex-1 p-4">
+            <div class="flex justify-between items-center mb-4">
+                <HistoryHeader />
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-4 mt-5">
-                <div
-                    class="w-full lg:flex-grow relative overflow-x-auto shadow-md sm:rounded-lg bg-white"
-                >
-                    <table class="min-w-full text-sm text-left text-gray-500">
-                        <thead
-                            class="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-200"
-                        >
-                            <tr>
-                                <th scope="col" class="px-6 py-3">ID</th>
-                                <th scope="col" class="px-6 py-3">Item</th>
-                                <th scope="col" class="px-6 py-3">Status</th>
-                                <th scope="col" class="px-6 py-3">
-                                    New Quantity
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Date Added
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template v-if="filteredItems.length > 0">
-                                <template
-                                    v-for="item in filteredItems"
-                                    :key="item.id"
-                                >
-                                    <tr
-                                        class="bg-white border-b border-gray-200 hover:bg-gray-50"
-                                    >
-                                        <th
-                                            scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                                        >
-                                            {{ item.id }}
-                                        </th>
-                                        <td class="px-6 py-4">
-                                            {{ item.name }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ item.status }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ item.newQuantity }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ item.dateAdded }}
-                                        </td>
-                                    </tr>
-                                </template>
-                            </template>
-                            <tr v-else>
-                                <td
-                                    colspan="5"
-                                    class="px-6 py-4 text-center text-gray-500"
-                                >
-                                    No items found for the selected date.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Date Filter -->
+            <div class="mb-4">
+                <input type="date" v-model="dateFilter" 
+                    class="w-full sm:w-1/3 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#E64444]">
+            </div>
 
-                <div
-                    class="flex flex-col space-y-4 w-full lg:w-72 mt-4 lg:mt-0"
-                >
-                    <div class="bg-white p-4 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold">Low on Stock</h3>
-                        <p class="text-sm text-gray-500">
-                            On December 19, 2024
-                        </p>
-                        <p class="text-xl font-semibold mt-2">Garlic</p>
-                        <p class="text-sm text-gray-500">2 Kg</p>
-                        <button
-                            class="mt-4 w-full bg-[#5BD069] text-white text-base font-normal py-2 rounded hover:bg-green-700"
-                        >
-                            Update
-                        </button>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold">No Stock</h3>
-                        <p class="text-sm text-gray-500">
-                            On December 19, 2024
-                        </p>
-                        <p class="text-xl font-semibold mt-2">Eggs</p>
-                        <button
-                            class="mt-4 w-full bg-[#5BD069] text-white text-base font-normal py-2 rounded hover:bg-green-700"
-                        >
-                            Update
-                        </button>
-                    </div>
-                </div>
+            <!-- History Table -->
+            <div class="overflow-x-auto bg-white shadow rounded mb-4">
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-gray-100 text-xs uppercase text-gray-600">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Date</th>
+                            <th class="px-4 py-3 text-left">Item Name</th>
+                            <th class="px-4 py-3 text-left">Action</th>
+                            <th class="px-4 py-3 text-left">Quantity</th>
+                            <th class="px-4 py-3 text-left">Status</th>
+                            <th class="px-4 py-3 text-left">Updated By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="record in filteredHistory" :key="record.id" class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3 text-left">
+                                {{ new Date(record.created_at).toLocaleDateString() }}
+                            </td>
+                            <td class="px-4 py-3 text-left">{{ record.item_name }}</td>
+                            <td class="px-4 py-3 text-left">
+                                <span :class="{
+                                    'px-2 py-1 rounded text-xs': true,
+                                    'bg-green-100 text-green-800': record.action === 'added',
+                                    'bg-blue-100 text-blue-800': record.action === 'updated',
+                                    'bg-red-100 text-red-800': record.action === 'deleted'
+                                }">
+                                    {{ record.action }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-left">{{ record.quantity }}</td>
+                            <td class="px-4 py-3 text-left">
+                                <span :class="{
+                                    'px-2 py-1 rounded text-xs': true,
+                                    'bg-green-100 text-green-800': record.status === 'available',
+                                    'bg-red-100 text-red-800': record.status === 'out_of_stock'
+                                }">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-left">{{ record.employee_name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import HistoryHeader from "@/Components/Headers/history-header.vue";
 import Sidebar from "@/Components/side-bar.vue";
-import DateFilter from "@/Components/date-filter.vue";
+import HistoryHeader from "@/Components/Headers/history-header.vue";
 import { Head } from "@inertiajs/vue3";
+
 export default {
-    name: "History",
     components: {
-        HistoryHeader,
         Sidebar,
-        DateFilter,
+        HistoryHeader,
         Head,
+    },
+    props: {
+        history: {
+            type: Array,
+            required: true
+        }
     },
     data() {
         return {
-            selectedDate: null,
-            items: [
-              
-            ],
+            dateFilter: ''
         };
     },
     computed: {
-        filteredItems() {
-            if (!this.selectedDate) {
-                return this.items;
-            }
-            return this.items.filter(
-                (item) => item.dateAdded === this.selectedDate
-            );
-        },
-    },
-    methods: {
-        updateSelectedDate(date) {
-            this.selectedDate = date;
-        },
-    },
+        filteredHistory() {
+            if (!this.dateFilter) return this.history;
+            
+            const filterDate = new Date(this.dateFilter);
+            return this.history.filter(record => {
+                const recordDate = new Date(record.created_at);
+                return recordDate.toDateString() === filterDate.toDateString();
+            });
+        }
+    }
 };
 </script>

@@ -39,23 +39,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in items" :key="item.item_id" class="border-b hover:bg-gray-50">
+                        <tr v-for="item in filteredItems" :key="item.item_id" class="border-b hover:bg-gray-50">
                             <td class="px-4 py-3 text-left">{{ item.item_id }}</td>
                             <td class="px-4 py-3 text-left">{{ item.item_name }}</td>
                             <td class="px-4 py-3 text-left">
                                 <span :class="{
                                     'px-2 py-1 rounded text-xs': true,
-                                    'bg-green-100 text-green-800': item.inventory?.status === 'available',
-                                    'bg-red-100 text-red-800': item.inventory?.status === 'out_of_stock'
+                                    'bg-green-100 text-green-800': item.inventory && item.inventory.status === 'available',
+                                    'bg-red-100 text-red-800': item.inventory && item.inventory.status === 'out_of_stock'
                                 }">
-                                    {{ item.inventory?.status }}
+                                    {{ item.inventory ? item.inventory.status : 'out_of_stock' }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 text-right">{{ item.inventory?.quantity }}</td>
+                            <td class="px-4 py-3 text-right">{{ item.inventory ? item.inventory.quantity : 0 }}</td>
                             <td class="px-4 py-3 text-left">{{ item.description }}</td>
                             <td class="px-4 py-3 text-left">{{ item.unit }}</td>
                             <td class="px-4 py-3 text-left">
-                                {{ new Date(item.inventory?.updated_at).toLocaleDateString() }}
+                                {{ new Date(item.updated_at).toLocaleDateString() }}
                             </td>
                             <td class="px-4 py-3 text-right space-x-2">
                                 <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
@@ -125,12 +125,12 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Quantity</label>
-                        <input v-model="newItem.quantity" type="number" required min="0"
+                        <input v-model="newItem.inventory.quantity" type="number" required min="0"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#E64444] focus:ring-[#E64444]">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Status</label>
-                        <select v-model="newItem.status" required
+                        <select v-model="newItem.inventory.status" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#E64444] focus:ring-[#E64444]">
                             <option value="available">Available</option>
                             <option value="out_of_stock">Out of Stock</option>
@@ -292,34 +292,60 @@ export default {
             showDeleteModal: false,
             selectedItem: null,
             searchQuery: "",
+            filteredItems: [],
             newItem: {
                 item_name: '',
                 description: '',
                 unit: '',
-                quantity: 0,
-                status: 'available'
+                inventory: {
+                    quantity: 0,
+                    status: 'available'
+                }
             }
         };
     },
+    watch: {
+        items: {
+            immediate: true,
+            handler(newItems) {
+                this.filteredItems = newItems;
+            }
+        }
+    },
     methods: {
-        searchItems: debounce(function() {
-            router.get(route('inventory.search'), { query: this.searchQuery }, {
-                preserveState: true,
-                preserveScroll: true,
-            });
-        }, 300),
+        searchItems() {
+            if (!this.searchQuery.trim()) {
+                this.filteredItems = this.items;
+                return;
+            }
+            
+            const searchTerm = this.searchQuery.toLowerCase();
+            this.filteredItems = this.items.filter(item => 
+                item.item_name.toLowerCase().includes(searchTerm)
+            );
+        },
 
         addItem() {
-            router.post(route('inventory.store'), this.newItem, {
+            const data = {
+                ...this.newItem,
+                employee_id: this.$page.props.auth.user.employee_id
+            };
+            
+            router.post(route('inventory.store'), data, {
                 onSuccess: () => {
                     this.showAddItemModal = false;
                     this.newItem = {
                         item_name: '',
                         description: '',
                         unit: '',
-                        quantity: 0,
-                        status: 'available'
+                        inventory: {
+                            quantity: 0,
+                            status: 'available'
+                        }
                     };
+                },
+                onError: (errors) => {
+                    console.error('Failed to add item:', errors);
                 }
             });
         },
@@ -330,7 +356,17 @@ export default {
         },
 
         updateItem() {
-            router.put(route('inventory.update', this.selectedItem.item_id), this.selectedItem, {
+            const data = {
+                item_name: this.selectedItem.item_name,
+                description: this.selectedItem.description,
+                unit: this.selectedItem.unit,
+                inventory: {
+                    quantity: this.selectedItem.inventory.quantity,
+                    status: this.selectedItem.inventory.status
+                }
+            };
+
+            router.put(route('inventory.update', this.selectedItem.item_id), data, {
                 onSuccess: () => {
                     this.showEditItemModal = false;
                 }
@@ -343,7 +379,14 @@ export default {
         },
 
         updateStock() {
-            router.put(route('inventory.update', this.selectedItem.item_id), this.selectedItem, {
+            const data = {
+                inventory: {
+                    quantity: this.selectedItem.inventory.quantity,
+                    status: this.selectedItem.inventory.status
+                }
+            };
+
+            router.put(route('inventory.update', this.selectedItem.item_id), data, {
                 onSuccess: () => {
                     this.showUpdateStockModal = false;
                 }

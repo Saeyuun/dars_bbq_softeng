@@ -7,6 +7,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\HistoryController;
 use Inertia\Inertia;
 
 // Route::get('/', function () {
@@ -39,9 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
     Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
     
-    // History route
-    Route::get('/history', [InventoryHistoryController::class, 'index'])->name('history');
-    Route::get('/inventory-history', [InventoryHistoryController::class, 'index'])->name('inventory.history');
     
     // Employee routes
     Route::get('/employees', [PageController::class, 'employees'])->name('employees');
@@ -55,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/inventory/{item}', [InventoryController::class, 'update'])->name('inventory.update');
     Route::delete('/inventory/{item}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
     Route::get('/inventory/search', [InventoryController::class, 'search'])->name('inventory.search');
+
+    // History route
+    Route::get('/history', [PageController::class, 'history'])->name('history');
 });
 
 require __DIR__ . '/auth.php';
