@@ -17,11 +17,7 @@
                 class="text-white font-semibold py-2 hover:text-[#E64444]"
                 >Contact Us</a
             >
-            <a
-                href="#"
-                class="text-white font-semibold py-2 hover:text-[#E64444]"
-                >Location</a
-            >
+
             <Link
                 href="/login"
                 method="get"
