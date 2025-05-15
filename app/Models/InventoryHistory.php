@@ -10,6 +10,7 @@ class InventoryHistory extends Model
 
     protected $fillable = [
         'inventory_id',
+        'item_name',
         'changes',
         'quantity_at_time',
         'status_at_time'

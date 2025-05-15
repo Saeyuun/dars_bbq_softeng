@@ -27,23 +27,28 @@ class InventoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'item_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'unit' => 'required|string|max:50',
-            'inventory' => 'required|array',
-            'inventory.quantity' => 'required|integer|min:0',
-            'inventory.status' => 'required|in:available,out_of_stock'
-        ]);
-
-        DB::beginTransaction();
         try {
+            $request->validate([
+                'item_name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'unit' => 'required|string|max:50',
+                'inventory' => 'required|array',
+                'inventory.quantity' => 'required|integer|min:0',
+                'inventory.status' => 'required|in:available,out_of_stock'
+            ]);
+
+            DB::beginTransaction();
+
+            // Create the item first
             $item = Item::create([
                 'item_name' => $request->item_name,
                 'description' => $request->description,
                 'unit' => $request->unit
             ]);
 
+            Log::info('Item created successfully', ['item_id' => $item->item_id]);
+
+            // Create the inventory record
             $inventory = Inventory::create([
                 'item_id' => $item->item_id,
                 'employee_id' => auth()->user()->employee_id,
@@ -51,20 +56,28 @@ class InventoryController extends Controller
                 'status' => $request->inventory['status']
             ]);
 
+            Log::info('Inventory record created successfully', ['inventory_id' => $inventory->inventory_id]);
+
             // Log the creation in inventory history
-            InventoryHistory::create([
+            $history = InventoryHistory::create([
                 'inventory_id' => $inventory->inventory_id,
+                'item_name' => $item->item_name,
                 'changes' => 'added',
                 'quantity_at_time' => $request->inventory['quantity'],
                 'status_at_time' => $request->inventory['status']
             ]);
 
+            Log::info('History record created successfully', ['history_id' => $history->id]);
+
             DB::commit();
             return redirect()->back()->with('success', 'Item added successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to add item: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to add item');
+            Log::error('Failed to add item: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
+            return redirect()->back()->with('error', 'Failed to add item: ' . $e->getMessage());
         }
     }
 
@@ -105,6 +118,7 @@ class InventoryController extends Controller
                 // Log the update in inventory history with the new values
                 InventoryHistory::create([
                     'inventory_id' => $currentInventory->inventory_id,
+                    'item_name' => $item->item_name,
                     'changes' => 'updated',
                     'quantity_at_time' => $request->inventory['quantity'],
                     'status_at_time' => $newStatus
@@ -123,6 +137,7 @@ class InventoryController extends Controller
                 // Log the creation in inventory history
                 InventoryHistory::create([
                     'inventory_id' => $inventory->inventory_id,
+                    'item_name' => $item->item_name,
                     'changes' => 'added',
                     'quantity_at_time' => $request->inventory['quantity'],
                     'status_at_time' => $newStatus
@@ -146,6 +161,7 @@ class InventoryController extends Controller
                 // Log the deletion in inventory history
                 InventoryHistory::create([
                     'inventory_id' => $item->inventory->inventory_id,
+                    'item_name' => $item->item_name,
                     'changes' => 'deleted',
                     'quantity_at_time' => $item->inventory->quantity,
                     'status_at_time' => $item->inventory->status
