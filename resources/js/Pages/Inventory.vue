@@ -371,7 +371,14 @@ export default {
         },
 
         openEditModal(item) {
-            this.selectedItem = { ...item };
+            this.selectedItem = { 
+                ...item,
+                inventory: {
+                    ...item.inventory,
+                    quantity: item.inventory?.quantity || 0,
+                    status: item.inventory?.status || 'out_of_stock'
+                }
+            };
             this.showEditItemModal = true;
         },
 
@@ -379,7 +386,11 @@ export default {
             const data = {
                 item_name: this.selectedItem.item_name,
                 description: this.selectedItem.description,
-                unit: this.selectedItem.unit
+                unit: this.selectedItem.unit,
+                inventory: {
+                    quantity: this.selectedItem.inventory.quantity,
+                    status: this.selectedItem.inventory.status
+                }
             };
 
             router.put(route('inventory.update', this.selectedItem.item_id), data, {

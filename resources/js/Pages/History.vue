@@ -10,7 +10,7 @@
         </div>
         <div class="flex-1 p-4">
             <div class="flex justify-between items-center mb-4">
-                <HistoryHeader />
+            <HistoryHeader />
             </div>
 
             <!-- Search and Filter -->
@@ -31,7 +31,7 @@
             <div class="overflow-x-auto bg-white shadow rounded mb-4">
                 <table class="min-w-full text-sm text-gray-700 table-fixed">
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
-                        <tr>
+                            <tr>
                             <th class="w-[100px] px-4 py-3 text-left">Log ID</th>
                             <th class="w-[180px] px-4 py-3 text-left">Date</th>
                             <th class="w-[200px] px-4 py-3 text-left">Item Name</th>
@@ -39,14 +39,14 @@
                             <th class="w-[100px] px-4 py-3 text-left">Quantity</th>
                             <th class="w-[120px] px-4 py-3 text-left">Status</th>
                             <th class="w-[150px] px-4 py-3 text-left">Updated By</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <tr v-for="record in filteredHistory" :key="record.id" class="border-b hover:bg-gray-50">
                             <td class="px-4 py-3 text-left">{{ record.id }}</td>
                             <td class="px-4 py-3 text-left truncate">
                                 {{ new Date(record.created_at).toLocaleString() }}
-                            </td>
+                                        </td>
                             <td class="px-4 py-3 text-left truncate">{{ record.item_name }}</td>
                             <td class="px-4 py-3 text-left">
                                 <span :class="{
@@ -57,7 +57,7 @@
                                 }">
                                     {{ record.action }}
                                 </span>
-                            </td>
+                                        </td>
                             <td class="px-4 py-3 text-left">{{ record.quantity }}</td>
                             <td class="px-4 py-3 text-left">
                                 <span :class="{
@@ -67,11 +67,11 @@
                                 }">
                                     {{ record.status === 'out_of_stock' ? 'Out of Stock' : 'Available' }}
                                 </span>
-                            </td>
+                                        </td>
                             <td class="px-4 py-3 text-left truncate">{{ record.employee_name }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </tr>
+                        </tbody>
+                    </table>
             </div>
         </div>
     </div>
