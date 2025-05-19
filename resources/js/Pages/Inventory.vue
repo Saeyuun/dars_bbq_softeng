@@ -36,22 +36,23 @@
                     <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                         <tr>
                             <th class="px-4 py-3 text-left">ID</th>
-                            <th class="px-4 py-3 text-left">Log ID</th>
                             <th class="px-4 py-3 text-left">Item</th>
-                            <th class="px-4 py-3 text-left">Status</th>
-                            <th class="px-4 py-3 text-right">Quantity</th>
                             <th class="px-4 py-3 text-left">Description</th>
                             <th class="px-4 py-3 text-left">Unit</th>
+                            <th class="px-4 py-3 text-right">Quantity</th>
+                            <th class="px-4 py-3 text-left">Status</th>
                             <th class="px-4 py-3 text-left">Date Updated</th>
-                            <th class="px-4 py-3 text-left">Actions</th>
+                            <th class="px-4 py-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                             <tr v-for="item in filteredItems" :key="item.item_id" class="border-b hover:bg-gray-50">
                                 <td class="px-4 py-3 text-left">{{ item.item_id }}</td>
-                                <td class="px-4 py-3 text-left">{{ item.inventory?.history?.[0]?.id || '-' }}</td>
                                 <td class="px-4 py-3 text-left">{{ item.item_name }}</td>
-                            <td class="px-4 py-3 text-left">
+                                <td class="px-4 py-3 text-left">{{ item.description }}</td>
+                                <td class="px-4 py-3 text-left">{{ item.unit }}</td>
+                                <td class="px-4 py-3 text-right">{{ item.inventory ? item.inventory.quantity : 0 }}</td>
+                                <td class="px-4 py-3 text-left">
                                     <span :class="{
                                         'px-2 py-1 rounded text-xs': true,
                                         'bg-green-100 text-green-800': item.inventory && item.inventory.status === 'available',
@@ -59,28 +60,25 @@
                                     }">
                                         {{ item.inventory ? item.inventory.status : 'out_of_stock' }}
                                     </span>
-                            </td>
-                                <td class="px-4 py-3 text-right">{{ item.inventory ? item.inventory.quantity : 0 }}</td>
-                                <td class="px-4 py-3 text-left">{{ item.description }}</td>
-                                <td class="px-4 py-3 text-left">{{ item.unit }}</td>
-                            <td class="px-4 py-3 text-left">
+                                </td>
+                                <td class="px-4 py-3 text-left">
                                     {{ new Date(item.updated_at).toLocaleDateString() }}
-                            </td>
-                            <td class="px-4 py-3 text-right space-x-2">
-                                <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                                    @click="openEditModal(item)">
-                                    Edit
-                                </button>
-                                <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                                    @click="openUpdateStockModal(item)">
-                                    Update
-                                </button>
-                                <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
-                                    @click="openDeleteModal(item)">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="px-4 py-3 text-right space-x-2">
+                                    <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                                        @click="openEditModal(item)">
+                                        Edit
+                                    </button>
+                                    <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                                        @click="openUpdateStockModal(item)">
+                                        Update
+                                    </button>
+                                    <button class="text-gray-500 hover:text-[#E64444] focus:outline-none"
+                                        @click="openDeleteModal(item)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
             </div>
